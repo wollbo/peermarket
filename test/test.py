@@ -9,13 +9,18 @@ from dotenv import load_dotenv
 
 # note: account check needs a separate app, can not have continuous access
 
-account = False  # no longer works, timeout after signing with bank-id
-user = False
-webhook = False
-payment = True
+ACCOUNT = False  # no longer works, timeout after signing with bank-id
+USER = False
+WEBHOOK = False
+PAYMENT = True
 
 
 def load_tinkenv():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     load_dotenv()
     _env = [
         "TINK_CLIENT_ID",
@@ -31,6 +36,14 @@ def load_tinkenv():
 
 
 def empty_to_none(field):
+    """_summary_
+
+    Args:
+        field (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     value = os.getenv(field)
     if value is None or len(value) == 0:
         return None
@@ -76,6 +89,14 @@ def initiate_tink(
 
 
 def create_bearer_token(base_url, **kwargs):
+    """_summary_
+
+    Args:
+        base_url (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     url = base_url + "oauth/token"
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -87,6 +108,16 @@ def create_bearer_token(base_url, **kwargs):
 
 
 def account_verification(client_id, client_secret, report_id):
+    """_summary_
+
+    Args:
+        client_id (_type_): _description_
+        client_secret (_type_): _description_
+        report_id (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     base_url = "https://api.tink.com/api/v1/"
     grant_type = "client_credentials"
     scope = "account-verification-reports:read"
@@ -106,6 +137,12 @@ def account_verification(client_id, client_secret, report_id):
 
 
 def create_user(client_id, client_secret):
+    """_summary_
+
+    Args:
+        client_id (_type_): _description_
+        client_secret (_type_): _description_
+    """
     base_url = "https://api.tink.com/api/v1/"
     grant_type = "client_credentials"
     scope = "user:create"
@@ -122,6 +159,16 @@ def create_user(client_id, client_secret):
 
 
 def webhook_creation(client_id, client_secret, webhook_url):
+    """_summary_
+
+    Args:
+        client_id (_type_): _description_
+        client_secret (_type_): _description_
+        webhook_url (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     base_url = "https://api.tink.com/api/v1/"
     grant_type = "client_credentials"
     scope = "webhook-endpoints"
@@ -149,6 +196,15 @@ def webhook_creation(client_id, client_secret, webhook_url):
 
 
 def payment_initiation(client_id, client_secret):
+    """_summary_
+
+    Args:
+        client_id (_type_): _description_
+        client_secret (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     base_url = "https://api.tink.com/api/v1/"
     grant_type = "client_credentials"
     scope = "payment:write"
@@ -184,6 +240,16 @@ def payment_initiation(client_id, client_secret):
 
 
 def payment_status(client_id, client_secret, payment_id):
+    """_summary_
+
+    Args:
+        client_id (_type_): _description_
+        client_secret (_type_): _description_
+        payment_id (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     base_url = "https://api.tink.com/api/v1/"
     grant_type = "client_credentials"
     scope = "payment:read"
@@ -206,7 +272,7 @@ def payment_status(client_id, client_secret, payment_id):
 
 env_vars = load_tinkenv()
 
-if account:
+if ACCOUNT:
     TINK_CLIENT_ID = env_vars["TINK_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["TINK_CLIENT_SECRET"]
     # logical flow, user authenticates and creates a account check report
@@ -226,12 +292,12 @@ if account:
     )
     print(response)
 
-if user:  # needs continuous access enabled, requested and awaiting toggle
+if USER:  # needs continuous access enabled, requested and awaiting toggle
     TINK_CLIENT_ID = env_vars["ORACLEPAY_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["ORACLEPAY_CLIENT_SECRET"]
     create_user(TINK_CLIENT_ID, TINK_CLIENT_SECRET)
 
-if webhook:
+if WEBHOOK:
     TINK_CLIENT_ID = env_vars["ORACLEPAY_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["ORACLEPAY_CLIENT_SECRET"]
     r = webhook_creation(
@@ -240,7 +306,7 @@ if webhook:
     print(r)
 
 
-if payment:
+if PAYMENT:
     TINK_CLIENT_ID = env_vars["ORACLEPAY_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["ORACLEPAY_CLIENT_SECRET"]
     json_response = payment_initiation(TINK_CLIENT_ID, TINK_CLIENT_SECRET)
@@ -256,7 +322,8 @@ if payment:
     # Important - select account other than recipient!
     print(tink_link)
 
-    # Either integrate webhooks to chainlink bridge which trigger webhook job (important to verify webhook secret)
+    # Either integrate webhooks to chainlink bridge which trigger
+    # webhook job (important to verify webhook secret)
     while True:  # or keeper polls this endpoint until status=sent
         input("Press <ENTER> to check payment status")
         payment_response = payment_status(
