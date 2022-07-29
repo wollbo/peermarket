@@ -30,8 +30,8 @@ const data = [
 function Home() {
   return (
     <div className="container text-center">
-          <div className="row">
-            <div className="col align-self-center">
+          <div className="row d-flex justify-content-center">
+            <div className="col-6 align-self-center">
               <h1 class="jumbotron-heading">
                 Buy and Sell Ethereum safely with Peermarket!
               </h1>
