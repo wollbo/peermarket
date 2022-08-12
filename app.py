@@ -1,7 +1,6 @@
 """
 Test
 """
-import dotenv
 from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.logging import create_logger
@@ -53,17 +52,28 @@ def account_check():
     """
     TINK_CLIENT_ID = env_vars["TINK_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["TINK_CLIENT_SECRET"]
+    MORALIS_MASTER_KEY = env_vars["MORALIS_REST_MASTER_KEY"]
     data = request.get_json(force=True)
-    print('Tink client id:', TINK_CLIENT_ID)
-    print(data)
     response = tink.account_verification(
         TINK_CLIENT_ID,
         TINK_CLIENT_SECRET,
         data["id"],
     )
-    print(response)
+    parsed = tink.parse_account_report(response)
+    # push to moralis database
+    """ implement the following into python:
+    curl -X POST \
+    -H "X-Parse-Application-Id: LJnmQAZBBR8M6wF4gR8VgypQLRBaJYDTC6GPhH6K" \
+    -H "X-Parse-Master-Key: {MORALIS_MASTER_KEY}" \
+    --data-urlencode "{\"id\": \"1b79990dcaa1478d83f3aa68e0539ba4\",
+    \"created\": 1660300523495,
+    \"iban\": \"SE8640219124958516279945\",
+    \"currency\": \"SEK\",
+    \"market\": \"SE\"}" \
+    https://yquro2m8inuv.usemoralis.com:2053/server/classes/Account
+    """
 
-    return response
+    return parsed
 
 
 if __name__ == "__main__":

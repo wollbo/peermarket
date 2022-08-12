@@ -109,6 +109,15 @@ def account_verification(client_id, client_secret, report_id): # changed topup t
     return r.json()
 
 
+def parse_account_report(report):
+    """Returns anonymized minimal necessary information from Tink report"""
+    parsed = {p: report[p] for p in report.keys() if p != 'userDataByProvider'}
+    parsed["iban"] = report["userDataByProvider"][0]["accounts"][0]["iban"]
+    parsed["currency"] = report["userDataByProvider"][0]["accounts"][0]["currencyCode"]
+    parsed["market"] = parsed["iban"][:2]
+    return parsed # potentially add "expiration" = "created" + 90 days
+
+
 def create_user(client_id, client_secret):
     base_url = 'https://api.tink.com/api/v1/'
     grant_type = 'client_credentials'
@@ -265,6 +274,7 @@ if account:
 
     response = account_verification(TINK_CLIENT_ID, TINK_CLIENT_SECRET, ACCOUNT_VERIFICATION_REPORT_ID)
     print(response)
+    parse_account_report(response)
 
 
 if payment:
