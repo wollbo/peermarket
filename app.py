@@ -53,26 +53,39 @@ def account_check():
     TINK_CLIENT_ID = env_vars["TINK_CLIENT_ID"]
     TINK_CLIENT_SECRET = env_vars["TINK_CLIENT_SECRET"]
     MORALIS_MASTER_KEY = env_vars["MORALIS_REST_MASTER_KEY"]
+    MORALIS_SERVER_URL = env_vars["REACT_APP_MORALIS_SERVER_URL"]
+    MORALIS_APP_ID = env_vars["REACT_APP_MORALIS_APPLICATION_ID"]
     data = request.get_json(force=True)
+    address = data["address"]
     response = tink.account_verification(
         TINK_CLIENT_ID,
         TINK_CLIENT_SECRET,
         data["id"],
     )
     parsed = tink.parse_account_report(response)
+    print(parsed)
     # push to moralis database
-    """ implement the following into python:
-    curl -X POST \
-    -H "X-Parse-Application-Id: LJnmQAZBBR8M6wF4gR8VgypQLRBaJYDTC6GPhH6K" \
-    -H "X-Parse-Master-Key: {MORALIS_MASTER_KEY}" \
-    --data-urlencode "{\"id\": \"1b79990dcaa1478d83f3aa68e0539ba4\",
-    \"created\": 1660300523495,
-    \"iban\": \"SE8640219124958516279945\",
-    \"currency\": \"SEK\",
-    \"market\": \"SE\"}" \
-    https://yquro2m8inuv.usemoralis.com:2053/server/classes/Account
-    """
+    url = MORALIS_SERVER_URL+'/classes/Account'
+    headers = {"X-Parse-Application-Id": MORALIS_APP_ID, "X-Parse-Master-Key": MORALIS_MASTER_KEY, 'Content-Type': 'application/x-www-form-urlencoded'}
+    parsed["reportId"] = parsed.pop('id')
+    parsed["address"] = address
+    data = tink.www_form_urlencoded(parsed)
 
+    print(url)
+    print(headers)
+    print(data)
+    resp = requests.post(url, headers=headers, data=data)
+    print(resp.text)
+    """
+    db_response = tink.push_to_database(
+        parsed,
+        base_url=MORALIS_SERVER_URL,
+        classes='/classes/Account',
+        app_id=MORALIS_APP_ID,
+        api_key=MORALIS_MASTER_KEY
+    )
+    print(db_response)
+    """
     return parsed
 
 

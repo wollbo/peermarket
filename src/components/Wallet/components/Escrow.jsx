@@ -1,10 +1,12 @@
-import { WalletOutlined, CreditCardOutlined } from "@ant-design/icons";
-import { Button, Input, notification } from "antd";
+import {
+  WalletOutlined,
+  CreditCardOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
+import { Button, Input, Timeline, notification } from "antd";
 import Text from "antd/lib/typography/Text";
 import { useEffect, useState } from "react";
-import { useMoralis } from "react-moralis";
-import CurrencySelector from "./CurrencySelector";
-import MarketSelector from "./MarketSelector";
+import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 // Edited version of Transfer
 const styles = {
   card: {
@@ -39,25 +41,61 @@ const styles = {
     gap: "10px",
     flexDirection: "row",
   },
+  timeline: {
+    marginTop: "20px",
+    marginBottom: "-45px",
+  },
 };
 
 function Escrow() {
   const { Moralis } = useMoralis();
-  //const [asset, setAsset] = useState(); // consider setting fixed to Matic/native
   const [tx, setTx] = useState();
   const [amount, setAmount] = useState();
-  const [currency, setCurrency] = useState();
   const [fiat, setFiat] = useState();
-  const [market, setMarket] = useState();
+  const [currency, setCurrency] = useState();
+  const { account, isAuthenticated } = useMoralis();
+  const [accountReport, setAccountReport] = useState();
   const [isPending, setIsPending] = useState(false);
+  const contractProcessor = useWeb3ExecuteFunction();
+  const peerMarketAddress = "0x97B24e3a0c3f4Ee4cF2C89a3a7D561BB4397640E";
+  /*const flags = [ TODO: map market dot to flag
+    {
+      AT: "🇦🇹",
+      EE: "🇪🇪",
+      FI: "🇫🇮",
+      FR: "🇫🇷",
+      DE: "🇩🇪",
+      IT: "🇮🇹",
+      NL: "🇳🇱",
+      NO: "🇳🇴",
+      PT: "🇵🇹",
+      ES: "🇪🇸",
+      SE: "🇸🇪",
+      UK: "🇬🇧",
+    },
+  ];*/
 
   useEffect(() => {
-    amount && currency && fiat && market
-      ? setTx({ amount, currency, fiat, market })
-      : setTx();
-  }, [amount, currency, fiat, market]);
+    amount && currency && fiat ? setTx({ amount, currency, fiat }) : setTx();
+    console.log(tx);
+  }, [amount, currency, fiat]);
 
-  const openNotification = ({ message, description }) => {
+  useEffect(() => {
+    async function fetchAccounts() {
+      const Accounts = Moralis.Object.extend("Account");
+      const query = new Moralis.Query(Accounts);
+      query.equalTo("address", account);
+      query.descending("created");
+      const result = await query.find();
+      console.log(result);
+      setAccountReport(result[0]);
+      setCurrency(accountReport.attributes.currency);
+    }
+
+    fetchAccounts();
+  }, [isAuthenticated]);
+
+  const handler = ({ message, description }) => {
     notification.open({
       placement: "bottomRight",
       message,
@@ -66,119 +104,151 @@ function Escrow() {
         console.log("Notification Clicked!");
       },
     });
+    setIsPending(false);
   };
 
-  async function transfer() {
-    const { amount, receiver, asset } = tx;
-
-    let options = {};
-
-    switch (asset.token_address) {
-      case "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee":
-        options = {
-          native: "native",
-          amount: Moralis.Units.ETH(amount),
-          receiver,
-          awaitReceipt: false,
-        };
-        break;
-      default:
-        options = {
-          type: "erc20",
-          amount: Moralis.Units.Token(amount, asset.decimals),
-          receiver,
-          contractAddress: asset.token_address,
-          awaitReceipt: false,
-        };
-    }
-
+  const createOffer = async function (peerMarket, _offer, _currency, _fiat) {
+    let options = {
+      contractAddress: peerMarket,
+      functionName: "newOffer",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_offer",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "_fiat",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_currency",
+              type: "string",
+            },
+          ],
+          name: "newOffer",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "payable",
+          type: "function",
+        },
+      ],
+      params: {
+        _offer,
+        _currency,
+        _fiat,
+      },
+      msgValue: _offer,
+    };
+    console.log(peerMarket);
+    console.log(_offer);
+    console.log(_currency);
+    console.log(_fiat);
     setIsPending(true);
-    const txStatus = await Moralis.transfer(options);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        handler({
+          message: "Offer created!",
+          description: `Listed ${_offer} MATIC for ${_fiat} ${_currency}`,
+        });
+      },
+      onError: (error) => {
+        handler({
+          message: "There was an error",
+          description: error.message,
+        });
+      },
+    });
+  };
 
-    txStatus
-      .on("transactionHash", (hash) => {
-        openNotification({
-          message: "🔊 New Transaction",
-          description: `${hash}`,
-        });
-        console.log("🔊 New Transaction", hash);
-      })
-      .on("receipt", (receipt) => {
-        openNotification({
-          message: "📃 New Receipt",
-          description: `${receipt.transactionHash}`,
-        });
-        console.log("🔊 New Receipt: ", receipt);
-        setIsPending(false);
-      })
-      .on("error", (error) => {
-        openNotification({
-          message: "📃 Error",
-          description: `${error.message}`,
-        });
-        console.error(error);
-        setIsPending(false);
-      });
-  }
-
-  return (
-    <div style={styles.card}>
-      <div style={styles.tranfer}>
-        <div style={styles.header}>
-          <h3>New listing</h3>
-        </div>
-        <div style={styles.select}>
-          <div style={styles.textWrapper}>
-            <Text strong>Amount:</Text>
+  if (account && isAuthenticated && accountReport) {
+    return (
+      <div style={styles.card}>
+        <div style={styles.tranfer}>
+          <div style={styles.header}>
+            <h3>Verified account</h3>
           </div>
-          <Input
+          <div style={styles.timeline}>
+            <Timeline mode="left" style={styles.timeline}>
+              <Timeline.Item dot="🏦">
+                <Text code style={styles.text}>
+                  IBAN: {accountReport.attributes.iban}
+                </Text>
+              </Timeline.Item>
+              <Timeline.Item dot="💱">
+                <Text code style={styles.text}>
+                  Currency: {accountReport.attributes.currency}
+                </Text>
+              </Timeline.Item>
+              <Timeline.Item dot="🚩">
+                <Text code style={styles.text}>
+                  Market: {accountReport.attributes.market}
+                </Text>
+              </Timeline.Item>
+            </Timeline>
+          </div>
+          <div style={styles.header}>
+            <h3>New listing</h3>
+          </div>
+          <div style={styles.select}>
+            <div style={styles.textWrapper}>
+              <Text strong>Amount:</Text>
+            </div>
+            <Input
+              size="large"
+              prefix={<WalletOutlined />}
+              onChange={(e) => {
+                setAmount(`${e.target.value}`);
+              }}
+            />
+          </div>
+          <div style={styles.select}>
+            <div style={styles.textWrapper}>
+              <Text strong>Fiat:</Text>
+            </div>
+            <Input
+              size="large"
+              prefix={<CreditCardOutlined />}
+              onChange={(e) => {
+                setFiat(`${e.target.value}`);
+              }}
+            />
+          </div>
+          <Button
+            type="primary"
             size="large"
-            prefix={<WalletOutlined />}
-            onChange={(e) => {
-              setAmount(`${e.target.value}`);
-            }}
-          />
+            loading={isPending}
+            style={{ width: "100%", marginTop: "25px" }}
+            onClick={() =>
+              createOffer(
+                peerMarketAddress,
+                String(amount * 10 ** 18),
+                currency,
+                fiat,
+              )
+            }
+            disabled={!tx}
+          >
+            Create
+          </Button>
         </div>
-        <div style={styles.select}>
-          <div style={styles.textWrapper}>
-            <Text strong>Currency:</Text>
-          </div>
-          <CurrencySelector
-            setCurrency={setCurrency}
-            style={{ width: "100%" }}
-          />
-        </div>
-        <div style={styles.select}>
-          <div style={styles.textWrapper}>
-            <Text strong>Fiat:</Text>
-          </div>
-          <Input
-            size="large"
-            prefix={<CreditCardOutlined />}
-            onChange={(e) => {
-              setFiat(`${e.target.value}`);
-            }}
-          />
-        </div>
-        <div style={styles.select}>
-          <div style={styles.textWrapper}>
-            <Text strong>Market:</Text>
-          </div>
-          <MarketSelector setMarket={setMarket} style={{ width: "100%" }} />
-        </div>
-        <Button
-          type="primary"
-          size="large"
-          loading={isPending}
-          style={{ width: "100%", marginTop: "25px" }}
-          onClick={() => transfer()}
-          disabled={!tx}
-        >
-          Transfer💸
-        </Button>
       </div>
-    </div>
-  );
+    );
+  }
+  {
+    !(account || isAuthenticated);
+    return <QuestionCircleOutlined />;
+  }
 }
 
 export default Escrow;

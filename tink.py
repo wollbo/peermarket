@@ -4,6 +4,7 @@ import os
 
 # note: account check needs a separate app, can not have continuous access
 
+test = False
 account = False
 payment = False # Demo bank
 
@@ -23,7 +24,10 @@ def load_tinkenv():
         'CREDENTIALS_ID',
         'ACCOUNT_VERIFICATION_REPORT_ID',
         'ORACLEPAY_CLIENT_ID',
-        'ORACLEPAY_CLIENT_SECRET'
+        'ORACLEPAY_CLIENT_SECRET',
+        'REACT_APP_MORALIS_APPLICATION_ID',
+        'REACT_APP_MORALIS_SERVER_URL',
+        'MORALIS_REST_MASTER_KEY'
         ]
     return {e: empty_to_none(e) for e in _env}
 
@@ -53,6 +57,10 @@ def construct_url(
         for key, value in kwargs.items():
             url += f'{key}={value}&'
     return url.rstrip('&')
+
+
+def www_form_urlencoded(data):
+    return construct_url('', '', **data).lstrip('?')
 
 
 def initiate_tink(
@@ -116,6 +124,27 @@ def parse_account_report(report):
     parsed["currency"] = report["userDataByProvider"][0]["accounts"][0]["currencyCode"]
     parsed["market"] = parsed["iban"][:2]
     return parsed # potentially add "expiration" = "created" + 90 days
+
+
+def push_to_database(
+    report, 
+    base_url='https://server.usemoralis.com:2053', 
+    classes='/server/classes/testClass',
+    app_id='',
+    api_key=''
+    ):
+    url = base_url + classes
+    report["report_id"] = report.pop('id')
+    data = www_form_urlencoded(data)
+    if app_id and api_key:
+        headers = {
+            "X-Parse-Application-Id": app_id, 
+            "X-Parse-Master-Key": api_key,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    else:
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    return requests.post(url, headers=headers, data=data).json()
 
 
 def create_user(client_id, client_secret):
@@ -260,6 +289,18 @@ def payment_status(client_id, client_secret, payment_id):
     }
     r = requests.get(url, headers=headers)
     return r.json()
+
+if test:
+    env_vars = load_tinkenv()
+    url = 'https://yquro2m8inuv.usemoralis.com:2053/server/classes/Account'
+    headers = {"X-Parse-Application-Id": env_vars["REACT_APP_MORALIS_APPLICATION_ID"], "X-Parse-Master-Key": env_vars["MORALIS_REST_MASTER_KEY"], 'Content-Type': 'application/x-www-form-urlencoded'}
+    parsed={"created": "1660379973868", "currency": "SEK", "iban": "SE8640219124958516279945", "reportId": "a06a5df1005c4f62ac23e1bb3a5cbfc0", "market": "SE", "address": "0x3fbb078878fea12e2782100521fbd329ab53da88"}
+    data = www_form_urlencoded(parsed)
+    print(url)
+    print(headers)
+    print(data)
+    resp = requests.post(url, headers=headers, data=data)
+    print(resp.text)
 
 
 if account:

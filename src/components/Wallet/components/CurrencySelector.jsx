@@ -33,7 +33,6 @@ export default function CurrencySelector({ setCurrency, style }) {
     <Select onChange={handleChange} size="large" style={style}>
       {currencies &&
         currencies.map((item) => {
-          console.log(item);
           return (
             <Select.Option value={item["name"]} key={item["name"]}>
               <div

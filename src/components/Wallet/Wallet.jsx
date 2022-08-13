@@ -39,7 +39,7 @@ async function initiateTink() {
   const url = `https://link.tink.com/1.0/${service}?client_id=${clientId}&redirect_uri=${callback}&locale=${locale}&test=true`;
   window.open(url);
 }
-
+// Eventually merge initiateTink with AccountVerification
 function Wallet() {
   return (
     <Card

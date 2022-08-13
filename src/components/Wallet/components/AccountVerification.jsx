@@ -1,13 +1,16 @@
 import { Input, Button } from "antd";
+import Text from "antd/lib/typography/Text";
 import { BankOutlined, RightSquareOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { useMoralis } from "react-moralis";
 
-async function sendAccountRequest(accountId) {
+async function sendAccountRequest(accountId, address) {
   alert("Request sent");
   //const recipient = "SE2023668362587681437762";
   const baseUrl = "/account"; // has been set as proxy
   const data = {
     id: accountId,
+    address: address,
   };
   const response = await fetch(baseUrl, {
     method: "POST",
@@ -28,7 +31,9 @@ export default function AccountVerification() {
   // Should only be one report id per account! remove old
   // Needs to update upon tink callback...
   const [id, setId] = useState();
-
+  const { account, isAuthenticated } = useMoralis();
+  if (!account || !isAuthenticated)
+    return <Text strong>You need to authenticate first</Text>;
   return (
     <div>
       <Input
@@ -41,7 +46,9 @@ export default function AccountVerification() {
       ></Input>
       <Button
         onClick={() => {
-          id === "" ? alert("Paste the report id.") : sendAccountRequest(id);
+          id === ""
+            ? alert("Paste the report id.")
+            : sendAccountRequest(id, account);
         }}
       >
         <RightSquareOutlined />
