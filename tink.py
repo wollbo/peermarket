@@ -117,12 +117,28 @@ def account_verification(client_id, client_secret, report_id): # changed topup t
     return r.json()
 
 
-def parse_account_report(report):
+def parse_account_report(report, test=False):
     """Returns anonymized minimal necessary information from Tink report"""
     parsed = {p: report[p] for p in report.keys() if p != 'userDataByProvider'}
-    parsed["iban"] = report["userDataByProvider"][0]["accounts"][0]["iban"]
     parsed["currency"] = report["userDataByProvider"][0]["accounts"][0]["currencyCode"]
-    parsed["market"] = parsed["iban"][:2]
+    parsed["iban"] = report["userDataByProvider"][0]["accounts"][0]["iban"]
+    parsed["market"] = parsed["iban"][:2]  
+    if test:
+        recipients = { # mapping market:currency:account, always use smallest account possible
+            "AT": {"EUR": 'AT850445855689970069'},
+            "EE": {"EUR": 'EE468233973006396045'},
+            "FI": {"EUR": 'FI5692728476249545', "SEK": 'FI8235510716321438'},
+            "FR": {"EUR": 'FR700899686173HRBWBEI35BP08'},
+            "DE": {"EUR": 'DE73567139321459454946'},
+            "IT": {"EUR": 'IT57R00537526833B2OTMXU3XSF'},
+            "NL": {"SEK": 'NL49OWYA2135730343'},
+            "NO": {"NOK": 'NO7292418639953'},
+            "PT": {"EUR": 'PT57099843891892236827523'},
+            "ES": {"EUR": 'ES2046606709420564020418'},
+            "SE": {"SEK": 'SE2023668362587681437762'},
+            "UK": {"GBP": 'GB76CHNI72617379714327'}
+        }
+        parsed["iban"] = recipients[parsed["market"]][parsed["currency"]]
     return parsed # potentially add "expiration" = "created" + 90 days
 
 

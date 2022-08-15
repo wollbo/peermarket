@@ -19,7 +19,7 @@ import QuickStart from "components/QuickStart";
 import Text from "antd/lib/typography/Text";
 import MenuItems from "./components/MenuItems";
 import logo from "./images/logo.png";
-import NFTBalance from "components/NFTBalance";
+import Market from "components/Market";
 const { Header, Footer } = Layout;
 
 //NFTBALANCE causes CORS N error
@@ -91,8 +91,8 @@ const App = ({ isServerInfo }) => {
             <Route path="/contract">
               <Contract />
             </Route>
-            <Route path="/nftBalance">
-              <NFTBalance />
+            <Route path="/market">
+              <Market />
             </Route>
             <Route path="/">
               <Redirect to="/quickstart" />

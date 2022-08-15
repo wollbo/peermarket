@@ -23,7 +23,7 @@ contract PeerMarket {
         _;
     }
 
-    event contractListed(address offerAddress, address seller, uint offer, string fiat, string currency);
+    event contractListed(address offerAddress, address seller, uint offer, string fiat, string currency, uint oraclePayment);
 
     event contractAccepted(address offerAddress, address seller, address buyer, uint offer, string fiat, string currency);
 
@@ -39,11 +39,11 @@ contract PeerMarket {
 
     }
 
-    function acceptedToListed(address _seller, uint _offer, string memory _fiat, string memory _currency) public {
+    function acceptedToListed(address _seller, uint _offer, string memory _fiat, string memory _currency, uint _payment) public {
         require(accepted[msg.sender] == true);
         accepted[msg.sender] = false;
         listed[msg.sender] = true;
-        emit contractListed(msg.sender, _seller, _offer, _fiat, _currency);
+        emit contractListed(msg.sender, _seller, _offer, _fiat, _currency, _payment);
 
     }
 
@@ -63,11 +63,11 @@ contract PeerMarket {
 
     function newOffer(uint _offer, string memory _fiat, string memory _currency) public payable returns(address) {
         require(msg.value == _offer, "Offer must be supplied at creation");
-
         Escrow e = (new Escrow){value: _offer}(_offer, _fiat, _currency);
         offers[address(e)] = address(e);
         listed[address(e)] = true;
-        emit contractListed(address(e), tx.origin, _offer, _fiat, _currency);
+        uint _payment = e.getPayment(); // should be possible to do e.ORACLE_PAYMENT
+        emit contractListed(address(e), tx.origin, _offer, _fiat, _currency, _payment);
         return address(e);
     }
 }
@@ -135,6 +135,10 @@ contract Escrow is ChainlinkClient {
         setChainlinkToken(LINK_MATIC);
     }
 
+    function getPayment() public view returns (uint256){
+        return ORACLE_PAYMENT;
+    }
+
     //Buyer needs to interact directly with LinkTokenInterface outside of this smart contract and approve contract for spending
     function getAllowance() public view returns (uint256){ 
         return link.allowance(msg.sender, address(this));
@@ -164,7 +168,7 @@ contract Escrow is ChainlinkClient {
         }
         state = State.LISTED;
         PeerMarket pm = PeerMarket(peermarket);
-        pm.acceptedToListed(seller, offer, fiat, currency);
+        pm.acceptedToListed(seller, offer, fiat, currency, ORACLE_PAYMENT);
     }
 
     function relist() public sellerOnly { // Seller can choose to relist contract if accept timer expires
@@ -174,7 +178,7 @@ contract Escrow is ChainlinkClient {
         link.transfer(buyer, (100-slash)*ORACLE_PAYMENT/100);
         state = State.LISTED;
         PeerMarket pm = PeerMarket(peermarket);
-        pm.acceptedToListed(seller, offer, fiat, currency);
+        pm.acceptedToListed(seller, offer, fiat, currency, ORACLE_PAYMENT);
     }
 
     function purchase(string memory _paymentId) public buyerOnly { // figure out how to synk with off-chain Tink payment initiation
@@ -188,7 +192,7 @@ contract Escrow is ChainlinkClient {
         if (timer + timeout < block.timestamp) { // return contract to listed if accept expires
             link.transfer(seller, (100-slash)*ORACLE_PAYMENT/100);
             state = State.LISTED;
-            pm.acceptedToListed(seller, offer, fiat, currency);
+            pm.acceptedToListed(seller, offer, fiat, currency, ORACLE_PAYMENT);
         }
         else {
             paymentId = _paymentId;
@@ -254,4 +258,4 @@ contract Escrow is ChainlinkClient {
         require(state == State.LISTED || state == State.FINISHED);
         link.transfer(seller, link.balanceOf(address(this)));
     }
-} 
+}

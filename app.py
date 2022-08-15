@@ -62,7 +62,8 @@ def account_check():
         TINK_CLIENT_SECRET,
         data["id"],
     )
-    parsed = tink.parse_account_report(response)
+    print(response)
+    parsed = tink.parse_account_report(response, test=True)
     print(parsed)
     # push to moralis database
     url = MORALIS_SERVER_URL+'/classes/Account'

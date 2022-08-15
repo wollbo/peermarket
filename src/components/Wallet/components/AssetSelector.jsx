@@ -1,17 +1,14 @@
-import { useERC20Balance } from "hooks/useERC20Balance";
-import { useMoralis, useNativeBalance } from "react-moralis";
+import { useNativeBalance } from "react-moralis";
 import { Image, Select } from "antd";
 import { useMemo } from "react";
 
+// removed erc20 tokens due to memory leak, rebuild properly later
 export default function AssetSelector({ setAsset, style }) {
-  const { assets } = useERC20Balance();
   const { data: nativeBalance, nativeToken } = useNativeBalance();
-  const { Moralis } = useMoralis();
 
   const fullBalance = useMemo(() => {
-    if (!assets || !nativeBalance) return null;
+    if (!nativeBalance) return null;
     return [
-      ...assets,
       {
         balance: nativeBalance.balance,
         decimals: nativeToken.decimals,
@@ -20,7 +17,7 @@ export default function AssetSelector({ setAsset, style }) {
         token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       },
     ];
-  }, [assets, nativeBalance, nativeToken]);
+  }, [nativeBalance, nativeToken]);
 
   function handleChange(value) {
     const token = fullBalance.find((token) => token.token_address === value);
@@ -31,7 +28,6 @@ export default function AssetSelector({ setAsset, style }) {
     <Select onChange={handleChange} size="large" style={style}>
       {fullBalance &&
         fullBalance.map((item) => {
-          console.log(item);
           return (
             <Select.Option
               value={item["token_address"]}
@@ -64,13 +60,6 @@ export default function AssetSelector({ setAsset, style }) {
                   }}
                 >
                   <p>{item.symbol}</p>
-                  <p style={{ alignSelf: "right" }}>
-                    (
-                    {parseFloat(
-                      Moralis?.Units?.FromWei(item.balance, item.decimals),
-                    )?.toFixed(6)}
-                    )
-                  </p>
                 </div>
               </div>
             </Select.Option>

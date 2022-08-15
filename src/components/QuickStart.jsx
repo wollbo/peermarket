@@ -75,20 +75,20 @@ export default function QuickStart() {
         style={styles.card}
         title={
           <>
-            📒 <Text strong>Receiving accounts</Text>
+            📒 <Text strong>Buyer Credentials</Text>
           </>
         }
       >
         <Timeline mode="left" style={styles.timeline}>
           <Timeline.Item dot="🇸🇪">
             <Text code style={styles.text}>
-              SEK: SE2023668362587681437762
+              SE: u58697449 / rjg121
             </Text>
           </Timeline.Item>
 
           <Timeline.Item dot="🇫🇮">
             <Text code style={styles.text}>
-              SEK: FI8235510716321438
+              FI: u06516046 / kam413
             </Text>
           </Timeline.Item>
         </Timeline>
@@ -99,47 +99,19 @@ export default function QuickStart() {
           style={styles.card}
           title={
             <>
-              💣 <Text strong>Starting Local Chain (optional)</Text>
+              📒 <Text strong>Seller Credentials</Text>
             </>
           }
         >
           <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Install{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/truffle"
-                >
-                  Truffle
-                </a>{" "}
-                and{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/ganache-cli"
-                >
-                  ganache-cli
-                </a>{" "}
-                <Text code>npm install -g ganache-cli truffle</Text>
+            <Timeline.Item dot="🇸🇪">
+              <Text code style={styles.text}>
+                SE: u27678322 / vrh343
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Start you local devchain: <Text code>npm run devchain</Text> on
-                a new terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="📡">
-              <Text style={styles.text}>
-                Deploy test contract: <Text code>npm run deploy</Text> on a new
-                terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="✅" style={styles.text}>
-              <Text>
-                Open the 📄<Text strong> Contract</Text> tab
+            <Timeline.Item dot="🇫🇮">
+              <Text code style={styles.text}>
+                FI: u80628915 / puv375
               </Text>
             </Timeline.Item>
           </Timeline>
