@@ -57,7 +57,7 @@ function Escrow() {
   const [accountReport, setAccountReport] = useState();
   const [isPending, setIsPending] = useState(false);
   const contractProcessor = useWeb3ExecuteFunction();
-  const peerMarketAddress = "0x97B24e3a0c3f4Ee4cF2C89a3a7D561BB4397640E";
+  const peerMarketAddress = "0xD14155F9C414E0A6c49F3DDAf6C193E85c1685Fe";
   /*const flags = [ TODO: map market dot to flag
     {
       AT: "🇦🇹",

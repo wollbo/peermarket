@@ -10,7 +10,7 @@ import {
 import Account from "components/Account/Account";
 import Chains from "components/Chains";
 import Wallet from "components/Wallet";
-import Contract from "components/Contract/Contract";
+import Contracts from "components/Contract/Contracts";
 import { Layout } from "antd";
 import "antd/dist/antd.css";
 import NativeBalance from "components/NativeBalance";
@@ -89,7 +89,7 @@ const App = ({ isServerInfo }) => {
               <Wallet />
             </Route>
             <Route path="/contract">
-              <Contract />
+              <Contracts />
             </Route>
             <Route path="/market">
               <Market />
