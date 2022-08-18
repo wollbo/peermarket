@@ -1,4 +1,4 @@
-import { Button, Card, Timeline, Typography } from "antd";
+import { Card, Timeline, Typography } from "antd";
 import React from "react";
 //import { useMoralis } from "react-moralis";
 
@@ -22,91 +22,96 @@ const styles = {
   },
 };
 
-async function sendTinkRequest() {
-  alert("Request sent");
-  //const recipient = "SE2023668362587681437762";
-  const baseUrl = "/payment/create"; // has been set as proxy
-  const data = {
-    //client_id: "68af8742e51a417d8e492fc72a058a7a",
-    //client_secret: "4b7ffb599d964197b66d6ef0c301050e",
-    market: "SE",
-    currency: "SEK",
-    amount: "1000",
-  };
-  const response = await fetch(baseUrl, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const responseData = await response.json();
-  console.log(responseData);
-  return responseData.id;
-}
-
-async function initiateTink(paymentRequestId) {
-  // this works
-  // args clientId, paymentRequestId
-  const clientId = "68af8742e51a417d8e492fc72a058a7a";
-  const service = "pay";
-  const callback = "https://console.tink.com/callback";
-  const market = "SE";
-  const locale = "en_US";
-  const inputProvider = "se-demobank-open-banking-redirect";
-
-  //Returns url to end user for authentication
-  const url = `https://link.tink.com/1.0/${service}?client_id=${clientId}&redirect_uri=${callback}&market=${market}&locale=${locale}&input_provider=${inputProvider}&payment_request_id=${paymentRequestId}`;
-  window.open(url);
-}
-
-async function tinkLinkPayment() {
-  const paymentId = await sendTinkRequest();
-  initiateTink(paymentId);
-}
-
 export default function QuickStart() {
   //const { Moralis } = useMoralis();
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-around",
+        gap: "10px",
+      }}
+    >
       <Card
         style={styles.card}
         title={
           <>
-            📒 <Text strong>Buyer Credentials</Text>
+            📒 <Text strong>Seller Credentials</Text>
           </>
         }
       >
         <Timeline mode="left" style={styles.timeline}>
-          <Timeline.Item dot="🇸🇪">
-            <Text code style={styles.text}>
-              SE: u58697449 / rjg121
-            </Text>
-          </Timeline.Item>
-
           <Timeline.Item dot="🇫🇮">
             <Text code style={styles.text}>
-              FI: u06516046 / kam413
+              FI: u80628915 / puv375
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇫🇷">
+            <Text code style={styles.text}>
+              FR: u98563939 / ene512
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇩🇪">
+            <Text code style={styles.text}>
+              DE: u98235448 / cdz248
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇮🇹">
+            <Text code style={styles.text}>
+              IT: u51613239 / cty440
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇳🇱">
+            <Text code style={styles.text}>
+              NL: u48874162 / idz429
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇳🇴">
+            <Text code style={styles.text}>
+              NO: u91804362 / szd875
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇵🇹">
+            <Text code style={styles.text}>
+              PT: u51613239 / cty440
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇪🇸">
+            <Text code style={styles.text}>
+              ES: u82144157 / ymm529
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇸🇪">
+            <Text code style={styles.text}>
+              SE: u27678322 / vrh343
+            </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🇬🇧">
+            <Text code style={styles.text}>
+              UK: u30315772 / ndg370
             </Text>
           </Timeline.Item>
         </Timeline>
       </Card>
-      <Button onClick={tinkLinkPayment}>Tink Payment</Button>
       <div>
         <Card
           style={styles.card}
           title={
             <>
-              📒 <Text strong>Seller Credentials</Text>
+              📒 <Text strong>Buyer Credentials</Text>
             </>
           }
         >
           <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="🇸🇪">
+            <Timeline.Item dot="🇦🇹">
               <Text code style={styles.text}>
-                SE: u27678322 / vrh343
+                AT: u37836153 / idv243
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇪🇪">
+              <Text code style={styles.text}>
+                EE: u45530588 / jkw063
               </Text>
             </Timeline.Item>
             <Timeline.Item dot="🇫🇮">
@@ -114,41 +119,49 @@ export default function QuickStart() {
                 FI: u80628915 / puv375
               </Text>
             </Timeline.Item>
-          </Timeline>
-        </Card>
-        <Card
-          style={{ marginTop: "10px", ...styles.card }}
-          title={
-            <>
-              📡{" "}
-              <Text strong> Connecting your Local Chain to the Moralis DB</Text>
-            </>
-          }
-        >
-          <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Download{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/fatedier/frp/releases"
-                >
-                  frpc
-                </a>{" "}
-                and provide missing params in the <Text code>.env</Text> file
+            <Timeline.Item dot="🇫🇷">
+              <Text code style={styles.text}>
+                FR: u77894411 / mzw990
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Connect your Moralis Database and Local Chain:{" "}
-                <Text code>npm run connect</Text>
+            <Timeline.Item dot="🇩🇪">
+              <Text code style={styles.text}>
+                DE: u83188312 / zhx571
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="💾">
-              <Text style={styles.text}>
-                Add contract events you want to watch:{" "}
-                <Text code>npm run watch:events</Text>
+            <Timeline.Item dot="🇮🇹">
+              <Text code style={styles.text}>
+                IT: u42389294 / fog735
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇳🇱">
+              <Text code style={styles.text}>
+                NL: u31617430 / xnf660
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇳🇴">
+              <Text code style={styles.text}>
+                NO: u47509183 / pgs057
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇵🇹">
+              <Text code style={styles.text}>
+                PT: u16025013 / jvq103
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇪🇸">
+              <Text code style={styles.text}>
+                ES: u89609866 / bst827
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇸🇪">
+              <Text code style={styles.text}>
+                SE: u27678322 / vrh343
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="🇬🇧">
+              <Text code style={styles.text}>
+                UK: u83646180 / rlf446
               </Text>
             </Timeline.Item>
           </Timeline>

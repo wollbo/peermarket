@@ -236,8 +236,8 @@ contract Escrow is ChainlinkClient {
 
     function paymentFulfilled() buyerOnly public payable { // seller doesn't need to be able to call this function
         require(state == State.PENDING);
-        require(requests > 0);
-        require(keccak256(abi.encodePacked(status)) == keccak256(abi.encodePacked("SENT0000000000000000000000000000")));
+        require(requests > 0, "You need to request payment status first");
+        require(keccak256(abi.encodePacked(status)) == keccak256(abi.encodePacked("SENT0000000000000000000000000000")), "Payment incomplete");
 
         buyer.transfer(address(this).balance);
         state = State.FINISHED;

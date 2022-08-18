@@ -32,7 +32,7 @@ const styles = {
 function Market() {
   const { Moralis } = useMoralis();
   const [isPending, setIsPending] = useState(false);
-  const [options, setOptions] = useState({});
+  const [options, setOptions] = useState();
   const [offersList, setOffers] = useState();
   const { account, isAuthenticated } = useMoralis();
   const contractProcessor = useWeb3ExecuteFunction();
@@ -177,8 +177,8 @@ function Market() {
         },
       ],
       params: {
-        escrowAddress,
-        value,
+        spender: escrowAddress,
+        value: String(value),
       },
     };
     await contractProcessor.fetch({
@@ -186,10 +186,11 @@ function Market() {
       onSuccess: () => {
         handler({
           message: "Allowance set!",
-          description: `Allowance increased to ${value}`,
+          description: `Allowance increased to ${value / 10 ** 18} LINK`,
         });
       },
       onError: (error) => {
+        console.log(error);
         handler({
           message: "There was an error",
           description: error.message,
@@ -220,6 +221,8 @@ function Market() {
     async function fetchOffers() {
       const Listed = Moralis.Object.extend("Listed");
       const query = new Moralis.Query(Listed);
+      const Accepted = Moralis.Object.extend("Accepted");
+      const accepted = new Moralis.Query(Accepted);
       /* this throws recursion errors
       {
         options.currency && query.equalTo("currency", options.currency);
@@ -232,6 +235,8 @@ function Market() {
         options.amount && query.lessThanOrEqualTo("offer", options.amount);
       }
       query.descending("offer");
+      //query.greaterThan("createdAt", accepted);
+      query.doesNotMatchKeyInQuery("offerAddress", "offerAddress", accepted); //createdAt can perhaps replace this
       const result = await query.find();
       setOffers(result);
       console.log(offersList);

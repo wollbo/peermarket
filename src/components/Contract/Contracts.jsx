@@ -10,7 +10,7 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     WebkitBoxPack: "start",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     margin: "0 auto",
     maxWidth: "1000px",
     width: "100%",
@@ -40,6 +40,50 @@ function Contracts() {
     console.log(isPending);
   };
 
+  async function sendTinkRequest() {
+    alert("Request sent");
+    //const recipient = "SE2023668362587681437762";
+    const baseUrl = "/payment/create"; // has been set as proxy
+    const data = {
+      //client_id: "68af8742e51a417d8e492fc72a058a7a",
+      //client_secret: "4b7ffb599d964197b66d6ef0c301050e",
+      market: "SE",
+      currency: "SEK",
+      amount: "1000",
+    };
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    return responseData.id;
+  }
+
+  async function initiateTink(paymentRequestId) {
+    // this works
+    // args clientId, paymentRequestId
+    const clientId = "68af8742e51a417d8e492fc72a058a7a";
+    const service = "pay";
+    const callback = "https://console.tink.com/callback";
+    const market = "SE";
+    const locale = "en_US";
+    const inputProvider = "se-demobank-open-banking-redirect";
+
+    //Returns url to end user for authentication
+    const url = `https://link.tink.com/1.0/${service}?client_id=${clientId}&redirect_uri=${callback}&market=${market}&locale=${locale}&input_provider=${inputProvider}&payment_request_id=${paymentRequestId}`;
+    window.open(url);
+  }
+
+  async function tinkLinkPayment() {
+    const paymentId = await sendTinkRequest();
+    initiateTink(paymentId);
+  }
+
   const purchase = async function (escrowAddress, paymentId) {
     let options = {
       contractAddress: escrowAddress,
@@ -59,7 +103,7 @@ function Contracts() {
           type: "function",
         },
       ],
-      params: { paymentId },
+      params: { _paymentId: paymentId },
     };
     console.log(escrowAddress);
     console.log(paymentId);
@@ -72,6 +116,7 @@ function Contracts() {
         });
       },
       onError: (error) => {
+        console.log(error);
         handler({
           message: "There was an error",
           description: error.message,
@@ -144,7 +189,7 @@ function Contracts() {
     const status = await Moralis.Web3API.native.runContractFunction(options);
     return status;
   };
-
+  */
   async function paymentFulfilled(escrowAddress) {
     let options = {
       contractAddress: escrowAddress,
@@ -155,7 +200,7 @@ function Contracts() {
           name: "paymentFulfilled",
           outputs: [],
           stateMutability: "payable",
-          type: "function"
+          type: "function",
         },
       ],
       params: {},
@@ -169,6 +214,7 @@ function Contracts() {
         });
       },
       onError: (error) => {
+        console.log(error);
         handler({
           message: "There was an error",
           description: error.message,
@@ -176,7 +222,7 @@ function Contracts() {
       },
     });
   }
-  */
+
   async function confirmPurchase(paymentId, escrowAddress) {
     if (account && isAuthenticated) {
       await purchase(escrowAddress, paymentId);
@@ -188,8 +234,11 @@ function Contracts() {
     async function fetchAccepted() {
       const Accepted = Moralis.Object.extend("Accepted");
       const query = new Moralis.Query(Accepted);
+      const Purchased = Moralis.Object.extend("Purchased");
+      const purchased = new Moralis.Query(Purchased);
       query.equalTo("buyer", account);
       query.descending("updatedAt");
+      query.doesNotMatchKeyInQuery("offerAddress", "offerAddress", purchased);
       const result = await query.find();
       setAccepted(result);
       console.log(acceptedList);
@@ -202,13 +251,11 @@ function Contracts() {
     async function fetchPurchased() {
       const Purchased = Moralis.Object.extend("Purchased");
       const query = new Moralis.Query(Purchased);
+      const Finished = Moralis.Object.extend("Finished");
+      const finished = new Moralis.Query(Finished);
       query.equalTo("buyer", account);
       query.descending("updatedAt");
-      query.doesNotMatchKeyInQuery(
-        "offerAddress",
-        "offerAddress",
-        acceptedList,
-      ); // unsure if this works
+      query.doesNotMatchKeyInQuery("offerAddress", "offerAddress", finished);
       const result = await query.find();
       setPurchased(result);
       console.log(purchasedList);
@@ -217,97 +264,214 @@ function Contracts() {
   }, []);
 
   return (
-    <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
-      <h1>Your Contracts</h1>
-      <div style={styles.Offers}>
-        <Skeleton loading={!acceptedList}>
-          {acceptedList &&
-            acceptedList.map((e) => {
-              return (
-                <Card
-                  hoverable
-                  actions={[
-                    <div>
-                      <Input
-                        size="large"
-                        style={{ width: "30%" }}
-                        prefix={<BankOutlined />}
-                        onChange={(e) => {
-                          setPaymentId(`${e.target.value}`);
-                          console.log(paymentId);
-                        }}
-                      ></Input>
-                      <Button
-                        onClick={() => {
-                          paymentId === ""
-                            ? alert("Paste the payment id.")
-                            : confirmPurchase(
-                                paymentId,
-                                e.attributes.offerAddress,
-                              );
-                        }}
-                      >
-                        <RightSquareOutlined />
-                      </Button>
-                    </div>,
-                  ]}
-                  style={{
-                    justifyContent: "flex-start",
-                    width: "100%",
-                    border: "4px solid #e7eaf3",
-                  }}
-                >
-                  <Meta
-                    title={"Offer"}
-                    description={String(e.attributes.offer / 10 ** 18)}
-                  />
-                  <Meta
-                    title={"Price"}
-                    description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                  />
-                  <Meta title={"Seller"} description={e.attributes.seller} />
-                </Card>
-              );
-            })}
-        </Skeleton>
+    <div style={{ display: "flex" }}>
+      <div
+        style={{
+          padding: "15px",
+          minWidth: "500px",
+          maxWidth: "1030px",
+          width: "100%",
+          justifyContent: "space-around",
+        }}
+      >
+        <h1>Your Contracts</h1>
+        <div style={styles.Offers}>
+          <Skeleton loading={!acceptedList}>
+            {acceptedList &&
+              acceptedList.map((e) => {
+                return (
+                  <Card
+                    title="Accepted"
+                    hoverable
+                    actions={[
+                      <div>
+                        <Button onClick={tinkLinkPayment}>Tink Payment</Button>
+                        <Input
+                          size="large"
+                          style={{ width: "30%" }}
+                          prefix={<BankOutlined />}
+                          onChange={(e) => {
+                            setPaymentId(`${e.target.value}`);
+                            console.log(paymentId);
+                          }}
+                        ></Input>
+                        <Button
+                          onClick={() => {
+                            paymentId === ""
+                              ? alert("Paste the payment id.")
+                              : confirmPurchase(
+                                  paymentId,
+                                  e.attributes.offerAddress,
+                                );
+                          }}
+                        >
+                          <RightSquareOutlined />
+                        </Button>
+                      </div>,
+                    ]}
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
+        <div>
+          <Skeleton loading={!purchasedList}>
+            {purchasedList &&
+              purchasedList.map((e) => {
+                return (
+                  <Card
+                    title="Purchased"
+                    hoverable
+                    actions={[
+                      <div>
+                        <Button
+                          onClick={() => {
+                            paymentStatus(e.attributes.offerAddress);
+                          }}
+                        >
+                          Confirm Payment
+                          <RightSquareOutlined />
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            paymentFulfilled(e.attributes.offerAddress);
+                          }}
+                        >
+                          Release Escrow
+                          <RightSquareOutlined />
+                        </Button>
+                      </div>,
+                    ]}
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
       </div>
-      <div>
-        <Skeleton loading={!purchasedList}>
-          {purchasedList &&
-            purchasedList.map((e) => {
-              return (
-                <Card
-                  hoverable
-                  actions={[
-                    <div>
-                      <Button
-                        onClick={() => {
-                          paymentStatus(e.attributes.offerAddress);
-                        }}
-                      >
-                        <RightSquareOutlined />
-                      </Button>
-                    </div>,
-                  ]}
-                  style={{
-                    justifyContent: "flex-start",
-                    width: "100%",
-                    border: "4px solid #e7eaf3",
-                  }}
-                >
-                  <Meta
-                    title={"Offer"}
-                    description={String(e.attributes.offer / 10 ** 18)}
-                  />
-                  <Meta
-                    title={"Price"}
-                    description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                  />
-                  <Meta title={"Seller"} description={e.attributes.seller} />
-                </Card>
-              );
-            })}
-        </Skeleton>
+      <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
+        <h1>Your Offers</h1>
+        <div style={styles.Offers}>
+          <Skeleton loading={!acceptedList}>
+            {acceptedList &&
+              acceptedList.map((e) => {
+                return (
+                  <Card
+                    title="Listed"
+                    hoverable
+                    actions={[
+                      <div>
+                        <Input
+                          size="large"
+                          style={{ width: "30%" }}
+                          prefix={<BankOutlined />}
+                          onChange={(e) => {
+                            setPaymentId(`${e.target.value}`);
+                            console.log(paymentId);
+                          }}
+                        ></Input>
+                        <Button
+                          onClick={() => {
+                            paymentId === ""
+                              ? alert("Paste the payment id.")
+                              : confirmPurchase(
+                                  paymentId,
+                                  e.attributes.offerAddress,
+                                );
+                          }}
+                        >
+                          <RightSquareOutlined />
+                        </Button>
+                      </div>,
+                    ]}
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
+        <div>
+          <Skeleton loading={!purchasedList}>
+            {purchasedList &&
+              purchasedList.map((e) => {
+                return (
+                  <Card
+                    title="Sold"
+                    hoverable
+                    actions={[
+                      <div>
+                        <Button
+                          onClick={() => {
+                            paymentStatus(e.attributes.offerAddress);
+                          }}
+                        >
+                          <RightSquareOutlined />
+                        </Button>
+                      </div>,
+                    ]}
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
       </div>
     </div>
   );
