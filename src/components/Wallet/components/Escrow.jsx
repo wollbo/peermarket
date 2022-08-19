@@ -89,11 +89,12 @@ function Escrow() {
       const result = await query.find();
       console.log(result);
       setAccountReport(result[0]);
+      console.log(accountReport);
       setCurrency(accountReport.attributes.currency);
     }
 
     fetchAccounts();
-  }, [isAuthenticated]);
+  }, [amount, fiat, isAuthenticated]);
 
   const handler = ({ message, description }) => {
     notification.open({

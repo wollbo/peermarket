@@ -23,6 +23,9 @@ function Contracts() {
   const [isPending, setIsPending] = useState(false);
   const [acceptedList, setAccepted] = useState();
   const [purchasedList, setPurchased] = useState();
+  const [listedList, setListed] = useState();
+  const [payoutList, setPayout] = useState(); // seller version of purchased
+  const [finishedList, setFinished] = useState();
   const [paymentId, setPaymentId] = useState();
   const { account, isAuthenticated } = useMoralis();
   const contractProcessor = useWeb3ExecuteFunction();
@@ -83,6 +86,108 @@ function Contracts() {
     const paymentId = await sendTinkRequest();
     initiateTink(paymentId);
   }
+
+  const cancel = async function (escrowAddress) {
+    let options = {
+      contractAddress: escrowAddress,
+      functionName: "cancel",
+      abi: [
+        {
+          inputs: [],
+          name: "cancel",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      params: {},
+    };
+    console.log(escrowAddress);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        handler({
+          message: "Offer cancelled!",
+          description: `Cancelled offer ${escrowAddress}`,
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        handler({
+          message: "There was an error",
+          description: error.message,
+        });
+      },
+    });
+  };
+
+  const relist = async function (escrowAddress) {
+    let options = {
+      contractAddress: escrowAddress,
+      functionName: "relist",
+      abi: [
+        {
+          inputs: [],
+          name: "relist",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      params: {},
+    };
+    console.log(escrowAddress);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        handler({
+          message: "Offer relisted!",
+          description: `Relisted offer ${escrowAddress}`,
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        handler({
+          message: "There was an error",
+          description: error.message,
+        });
+      },
+    });
+  };
+
+  const confirm = async function (escrowAddress) {
+    let options = {
+      contractAddress: escrowAddress,
+      functionName: "confirm",
+      abi: [
+        {
+          inputs: [],
+          name: "confirm",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+      ],
+      params: {},
+    };
+    console.log(escrowAddress);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        handler({
+          message: "Escrow released!",
+          description: `Released escrow for offer ${escrowAddress}`,
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        handler({
+          message: "There was an error",
+          description: error.message,
+        });
+      },
+    });
+  };
 
   const purchase = async function (escrowAddress, paymentId) {
     let options = {
@@ -229,6 +334,24 @@ function Contracts() {
     }
   }
 
+  async function cancelAccepted(escrowAddress) {
+    if (account && isAuthenticated) {
+      await cancel(escrowAddress);
+    }
+  }
+
+  async function relistAccepted(escrowAddress) {
+    if (account && isAuthenticated) {
+      await relist(escrowAddress);
+    }
+  }
+
+  async function releaseEscrow(escrowAddress) {
+    if (account && isAuthenticated) {
+      await confirm(escrowAddress);
+    }
+  }
+
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
     async function fetchAccepted() {
@@ -263,6 +386,54 @@ function Contracts() {
     fetchPurchased();
   }, []);
 
+  useEffect(() => {
+    // import similarly to how tx is imported in transfer from searchbar
+    async function fetchListed() {
+      const Listed = Moralis.Object.extend("Listed");
+      const query = new Moralis.Query(Listed);
+      const Finished = Moralis.Object.extend("Finished");
+      const finished = new Moralis.Query(Finished);
+      query.equalTo("seller", account);
+      query.descending("updatedAt");
+      query.doesNotMatchKeyInQuery("offerAddress", "offerAddress", finished);
+      const result = await query.find();
+      setListed(result);
+      console.log(listedList);
+    }
+    fetchListed();
+  }, []);
+
+  useEffect(() => {
+    // import similarly to how tx is imported in transfer from searchbar
+    async function fetchPayout() {
+      const Payout = Moralis.Object.extend("Purchased");
+      const query = new Moralis.Query(Payout);
+      const Finished = Moralis.Object.extend("Finished");
+      const finished = new Moralis.Query(Finished);
+      query.equalTo("seller", account);
+      query.descending("updatedAt");
+      query.doesNotMatchKeyInQuery("offerAddress", "offerAddress", finished);
+      const result = await query.find();
+      setPayout(result);
+      console.log(payoutList);
+    }
+    fetchPayout();
+  }, []);
+
+  useEffect(() => {
+    // import similarly to how tx is imported in transfer from searchbar
+    async function fetchFinished() {
+      const Finished = Moralis.Object.extend("Finished");
+      const query = new Moralis.Query(Finished);
+      query.equalTo("seller", account);
+      query.descending("updatedAt");
+      const result = await query.find();
+      setFinished(result);
+      console.log(finishedList);
+    }
+    fetchFinished();
+  }, []);
+
   return (
     <div style={{ display: "flex" }}>
       <div
@@ -285,6 +456,13 @@ function Contracts() {
                     hoverable
                     actions={[
                       <div>
+                        <Button
+                          onClick={() => {
+                            cancelAccepted(e.attributes.offerAddress);
+                          }}
+                        >
+                          Cancel
+                        </Button>
                         <Button onClick={tinkLinkPayment}>Tink Payment</Button>
                         <Input
                           size="large"
@@ -381,35 +559,21 @@ function Contracts() {
       <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
         <h1>Your Offers</h1>
         <div style={styles.Offers}>
-          <Skeleton loading={!acceptedList}>
-            {acceptedList &&
-              acceptedList.map((e) => {
+          <Skeleton loading={!listedList}>
+            {listedList &&
+              listedList.map((e) => {
                 return (
                   <Card
                     title="Listed"
                     hoverable
                     actions={[
                       <div>
-                        <Input
-                          size="large"
-                          style={{ width: "30%" }}
-                          prefix={<BankOutlined />}
-                          onChange={(e) => {
-                            setPaymentId(`${e.target.value}`);
-                            console.log(paymentId);
-                          }}
-                        ></Input>
                         <Button
                           onClick={() => {
-                            paymentId === ""
-                              ? alert("Paste the payment id.")
-                              : confirmPurchase(
-                                  paymentId,
-                                  e.attributes.offerAddress,
-                                );
+                            relistAccepted(e.attributes.offerAddress);
                           }}
                         >
-                          <RightSquareOutlined />
+                          Relist
                         </Button>
                       </div>,
                     ]}
@@ -433,22 +597,22 @@ function Contracts() {
               })}
           </Skeleton>
         </div>
-        <div>
-          <Skeleton loading={!purchasedList}>
-            {purchasedList &&
-              purchasedList.map((e) => {
+        <div style={styles.Offers}>
+          <Skeleton loading={!payoutList}>
+            {payoutList &&
+              payoutList.map((e) => {
                 return (
                   <Card
-                    title="Sold"
+                    title="Payout"
                     hoverable
                     actions={[
                       <div>
                         <Button
                           onClick={() => {
-                            paymentStatus(e.attributes.offerAddress);
+                            releaseEscrow(e.attributes.offerAddress);
                           }}
                         >
-                          <RightSquareOutlined />
+                          Payment Received
                         </Button>
                       </div>,
                     ]}
@@ -467,6 +631,36 @@ function Contracts() {
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
                     <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta title={"Buyer"} description={e.attributes.buyer} />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
+        <div>
+          <Skeleton loading={!finishedList}>
+            {finishedList &&
+              finishedList.map((e) => {
+                return (
+                  <Card
+                    title="Sold"
+                    hoverable
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta title={"Buyer"} description={e.attributes.buyer} />
                   </Card>
                 );
               })}

@@ -7,16 +7,6 @@ import SearchBar from "./components/SearchBar";
 const { Meta } = Card;
 
 const styles = {
-  NFTs: {
-    display: "flex",
-    flexWrap: "wrap",
-    WebkitBoxPack: "start",
-    justifyContent: "flex-start",
-    margin: "0 auto",
-    maxWidth: "1000px",
-    width: "100%",
-    gap: "10px",
-  },
   Offers: {
     display: "flex",
     flexWrap: "wrap",
