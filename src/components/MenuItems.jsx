@@ -21,14 +21,14 @@ function MenuItems() {
       <Menu.Item key="/market">
         <NavLink to="/market">🏛️ Market</NavLink>
       </Menu.Item>
-      <Menu.Item key="/wallet">
-        <NavLink to="/wallet">💰 Listing</NavLink>
+      <Menu.Item key="/listing">
+        <NavLink to="/listing">💰 Listing</NavLink>
       </Menu.Item>
-      <Menu.Item key="/contract">
-        <NavLink to="/contract">📄 Contracts</NavLink>
+      <Menu.Item key="/contracts">
+        <NavLink to="/contracts">📄 Contracts</NavLink>
       </Menu.Item>
-      <Menu.Item key="/quickstart">
-        <NavLink to="/quickstart">👥 Accounts</NavLink>
+      <Menu.Item key="/credentials">
+        <NavLink to="/credentials">👥 Credentials</NavLink>
       </Menu.Item>
     </Menu>
   );

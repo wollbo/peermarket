@@ -82,23 +82,23 @@ const App = ({ isServerInfo }) => {
 
         <div style={styles.content}>
           <Switch>
-            <Route exact path="/quickstart">
+            <Route exact path="/credentials">
               <QuickStart isServerInfo={isServerInfo} />
             </Route>
-            <Route path="/wallet">
+            <Route path="/listing">
               <Wallet />
             </Route>
-            <Route path="/contract">
+            <Route path="/contracts">
               <Contracts />
             </Route>
             <Route path="/market">
               <Market />
             </Route>
             <Route path="/">
-              <Redirect to="/quickstart" />
+              <Redirect to="/credentials" />
             </Route>
             <Route path="/peermarket">
-              <Redirect to="/quickstart" />
+              <Redirect to="/credentials" />
             </Route>
             <Route path="/nonauthenticated">
               <>Please login using the "Authenticate" button</>
@@ -108,37 +108,15 @@ const App = ({ isServerInfo }) => {
       </Router>
       <Footer style={{ textAlign: "center" }}>
         <Text style={{ display: "block" }}>
-          ⭐️ Please star this{" "}
+          Page under development{" "}
           <a
-            href="https://github.com/ethereum-boilerplate/ethereum-boilerplate/"
+            href="https://github.com/wollbo/peermarket/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            boilerplate
+            here
           </a>
-          , every star makes us very happy!
-        </Text>
-
-        <Text style={{ display: "block" }}>
-          🙋 You have questions? Ask them on the {""}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://forum.moralis.io/t/ethereum-boilerplate-questions/3951/29"
-          >
-            Moralis forum
-          </a>
-        </Text>
-
-        <Text style={{ display: "block" }}>
-          📖 Read more about{" "}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplat"
-          >
-            Moralis
-          </a>
+          , expect bugs!
         </Text>
       </Footer>
     </Layout>
