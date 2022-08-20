@@ -62,22 +62,7 @@ def account_check():
         TINK_CLIENT_SECRET,
         data["id"],
     )
-    print(response)
     parsed = tink.parse_account_report(response, test=True)
-    print(parsed)
-    # push to moralis database
-    url = MORALIS_SERVER_URL+'/classes/Account'
-    headers = {"X-Parse-Application-Id": MORALIS_APP_ID, "X-Parse-Master-Key": MORALIS_MASTER_KEY, 'Content-Type': 'application/x-www-form-urlencoded'}
-    parsed["reportId"] = parsed.pop('id')
-    parsed["address"] = address
-    data = tink.www_form_urlencoded(parsed)
-
-    print(url)
-    print(headers)
-    print(data)
-    resp = requests.post(url, headers=headers, data=data)
-    print(resp.text)
-    """
     db_response = tink.push_to_database(
         parsed,
         base_url=MORALIS_SERVER_URL,
@@ -86,7 +71,6 @@ def account_check():
         api_key=MORALIS_MASTER_KEY
     )
     print(db_response)
-    """
     return parsed
 
 

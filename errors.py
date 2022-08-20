@@ -15,7 +15,8 @@ def init_handler(app):
                 "description": e.description,
             })
         else:
-            response = make_response(jsonify({"message": 'Something went wrong'}))
+            print(e)
+            response = make_response(jsonify({"message": 'Something went wrong', "description": e}))
         
         response.headers["Access-Control-Allow-Origin"] = '*'
         response.content_type = "application/json"

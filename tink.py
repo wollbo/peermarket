@@ -151,7 +151,7 @@ def push_to_database(
     ):
     url = base_url + classes
     report["report_id"] = report.pop('id')
-    data = www_form_urlencoded(data)
+    data = www_form_urlencoded(report)
     if app_id and api_key:
         headers = {
             "X-Parse-Application-Id": app_id, 
@@ -317,7 +317,7 @@ if test:
     env_vars = load_tinkenv()
     url = 'https://yquro2m8inuv.usemoralis.com:2053/server/classes/Account'
     headers = {"X-Parse-Application-Id": env_vars["REACT_APP_MORALIS_APPLICATION_ID"], "X-Parse-Master-Key": env_vars["MORALIS_REST_MASTER_KEY"], 'Content-Type': 'application/x-www-form-urlencoded'}
-    parsed={"created": "1660379973868", "currency": "SEK", "iban": "SE8640219124958516279945", "reportId": "9c02e888b697463ab8534a3b5fbdbcf8", "market": "SE", "address": "0x4c2cd23ae18e585c4efbed165e95de99520dd5fa"}
+    parsed = {'reportId': 'e30bd0e526f34b39bc520e7c74534334', 'created': 1660985932078, 'currency': 'SEK', 'iban': 'SE2023668362587681437762', 'market': 'SE'}
     data = www_form_urlencoded(parsed)
     print(url)
     print(headers)
