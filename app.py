@@ -63,6 +63,7 @@ def account_check():
         data["id"],
     )
     parsed = tink.parse_account_report(response, test=True)
+    parsed["address"] = address
     db_response = tink.push_to_database(
         parsed,
         base_url=MORALIS_SERVER_URL,

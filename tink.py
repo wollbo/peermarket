@@ -120,6 +120,7 @@ def account_verification(client_id, client_secret, report_id): # changed topup t
 def parse_account_report(report, test=False):
     """Returns anonymized minimal necessary information from Tink report"""
     parsed = {p: report[p] for p in report.keys() if p != 'userDataByProvider'}
+    parsed["reportId"] = parsed.pop('id')
     parsed["currency"] = report["userDataByProvider"][0]["accounts"][0]["currencyCode"]
     parsed["iban"] = report["userDataByProvider"][0]["accounts"][0]["iban"]
     parsed["market"] = parsed["iban"][:2]  
@@ -150,7 +151,6 @@ def push_to_database(
     api_key=''
     ):
     url = base_url + classes
-    report["report_id"] = report.pop('id')
     data = www_form_urlencoded(report)
     if app_id and api_key:
         headers = {
