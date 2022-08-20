@@ -160,7 +160,9 @@ function Escrow() {
       onSuccess: () => {
         handler({
           message: "Offer created!",
-          description: `Listed ${_offer} MATIC for ${_fiat} ${_currency}`,
+          description: `Listed ${
+            _offer / 10 ** 18
+          } MATIC for ${_fiat} ${_currency}`,
         });
       },
       onError: (error) => {
@@ -248,7 +250,18 @@ function Escrow() {
   }
   {
     !(account || isAuthenticated);
-    return <QuestionCircleOutlined />;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          flexDirection: "row",
+        }}
+      >
+        <QuestionCircleOutlined /> <Text> No account registered </Text>
+      </div>
+    );
   }
 }
 

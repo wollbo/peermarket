@@ -23,6 +23,7 @@ function Contracts() {
   const [isPending, setIsPending] = useState(false);
   const [acceptedList, setAccepted] = useState();
   const [purchasedList, setPurchased] = useState();
+  const [sentList, setSent] = useState();
   const [listedList, setListed] = useState();
   const [payoutList, setPayout] = useState(); // seller version of purchased
   const [finishedList, setFinished] = useState();
@@ -48,8 +49,6 @@ function Contracts() {
     //const recipient = "SE2023668362587681437762";
     const baseUrl = "/payment/create"; // has been set as proxy
     const data = {
-      //client_id: "68af8742e51a417d8e492fc72a058a7a",
-      //client_secret: "4b7ffb599d964197b66d6ef0c301050e",
       market: "SE",
       currency: "SEK",
       amount: "1000",
@@ -388,6 +387,20 @@ function Contracts() {
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
+    async function fetchSent() {
+      const Sent = Moralis.Object.extend("Finished");
+      const query = new Moralis.Query(Sent);
+      query.equalTo("buyer", account);
+      query.descending("updatedAt");
+      const result = await query.find();
+      setSent(result);
+      console.log(purchasedList);
+    }
+    fetchSent();
+  }, []);
+
+  useEffect(() => {
+    // import similarly to how tx is imported in transfer from searchbar
     async function fetchListed() {
       const Listed = Moralis.Object.extend("Listed");
       const query = new Moralis.Query(Listed);
@@ -435,13 +448,13 @@ function Contracts() {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", justifyContent: "space-around" }}>
       <div
         style={{
           padding: "15px",
           minWidth: "500px",
-          maxWidth: "1030px",
-          width: "100%",
+          maxWidth: "950px",
+          width: "70%",
           justifyContent: "space-around",
         }}
       >
@@ -555,8 +568,55 @@ function Contracts() {
               })}
           </Skeleton>
         </div>
+        <div>
+          <Skeleton loading={!sentList}>
+            {sentList &&
+              sentList.map((e) => {
+                return (
+                  <Card
+                    title="Sold"
+                    hoverable
+                    style={{
+                      justifyContent: "flex-start",
+                      width: "100%",
+                      border: "4px solid #e7eaf3",
+                    }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={String(e.attributes.offer / 10 ** 18)}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta
+                      title={"Payment ID"}
+                      description={e.attributes.paymentId}
+                    />
+                    <Meta
+                      title={"Payment Status"}
+                      description={`${String(e.attributes.status).replaceAll(
+                        0,
+                        "",
+                      )}`}
+                    />
+                  </Card>
+                );
+              })}
+          </Skeleton>
+        </div>
       </div>
-      <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
+      <div
+        style={{
+          padding: "15px",
+          minWidth: "500px",
+          maxWidth: "950px",
+          width: "70%",
+          justifyContent: "space-around",
+        }}
+      >
         <h1>Your Offers</h1>
         <div style={styles.Offers}>
           <Skeleton loading={!listedList}>
@@ -630,8 +690,18 @@ function Contracts() {
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
                     <Meta title={"Buyer"} description={e.attributes.buyer} />
+                    <Meta
+                      title={"Payment ID"}
+                      description={e.attributes.paymentId}
+                    />
+                    <Meta
+                      title={"Payment Status"}
+                      description={`${String(e.attributes.status).replaceAll(
+                        0,
+                        "",
+                      )}`}
+                    />
                   </Card>
                 );
               })}
@@ -659,8 +729,18 @@ function Contracts() {
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
                     <Meta title={"Buyer"} description={e.attributes.buyer} />
+                    <Meta
+                      title={"Payment ID"}
+                      description={e.attributes.paymentId}
+                    />
+                    <Meta
+                      title={"Payment Status"}
+                      description={`${String(e.attributes.status).replaceAll(
+                        0,
+                        "",
+                      )}`}
+                    />
                   </Card>
                 );
               })}

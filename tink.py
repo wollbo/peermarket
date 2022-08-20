@@ -9,8 +9,8 @@ account = False
 payment = False # Demo bank
 
 # payment parameters
-market = 'SE' # default SE, recipients location
-currency = 'SEK' # recipient and payers currency needs to match
+market = 'FR' # default SE, recipients location
+currency = 'EUR' # recipient and payers currency needs to match
 amount = 1000 # > 150 to prevent paying from receiving account
 
 
@@ -136,7 +136,7 @@ def parse_account_report(report, test=False):
             "PT": {"EUR": 'PT57099843891892236827523'},
             "ES": {"EUR": 'ES2046606709420564020418'},
             "SE": {"SEK": 'SE2023668362587681437762'},
-            "UK": {"GBP": 'GB76CHNI72617379714327'}
+            "GB": {"GBP": 'GB76CHNI72617379714327'}
         }
         parsed["iban"] = recipients[parsed["market"]][parsed["currency"]]
     return parsed # potentially add "expiration" = "created" + 90 days
@@ -231,7 +231,7 @@ def payment_initiation(
         "PT": {"EUR": 'PT57099843891892236827523'},
         "ES": {"EUR": 'ES2046606709420564020418'},
         "SE": {"SEK": 'SE2023668362587681437762'},
-        "UK": {"GBP": 'GB76CHNI72617379714327'}
+        "GB": {"GBP": 'GB76CHNI72617379714327'}
     }
 
     senders = { # just for info for front end later, only currency matching matters
@@ -245,7 +245,14 @@ def payment_initiation(
         "PT": {"EUR": 'PT63465472006596504782081'},
         "ES": {"EUR": 'ES4320339641318952396609'},
         "SE": {"SEK": 'SE2885222529285409533697'},
-        "UK": {"GBP": 'GB27WRDK15987166981285'}
+        "GB": {"GBP": 'GB27WRDK15987166981285'}
+    }
+
+    payments = {
+        "EUR": 'SEPA_INSTANT_CREDIT_TRANSFER',
+        "GBP": 'UNSTRUCTURED', # alternative: FASTER_PAYMENTS
+        "SEK": 'UNSTRUCTURED',
+        "NOK": 'SEPA_INSTANT_CREDIT_TRANSFER'
     }
 
     bearer_token = create_bearer_token(
@@ -271,14 +278,14 @@ def payment_initiation(
         "amount": amount,
         "currency": currency,
         "market": market,
-        "recipientName": "0xaCDd...1c48F1",
+        "recipientName": "PeerMarket seller",
         "sourceMessage": "OraclePay escrow payment",
         "remittanceInformation": {
             "type": "UNSTRUCTURED",
             "value": "CREDITOR REFERENCE"
           },
-        "paymentScheme": "SEPA_INSTANT_CREDIT_TRANSFER", # <-- key: limits up to 100k€
-        "sourceMessage": "OraclePay test"
+        "paymentScheme": payments[currency],
+        "sourceMessage": "OraclePay"
     }
 
     r = requests.post(url, headers=headers, json=data)
@@ -310,7 +317,7 @@ if test:
     env_vars = load_tinkenv()
     url = 'https://yquro2m8inuv.usemoralis.com:2053/server/classes/Account'
     headers = {"X-Parse-Application-Id": env_vars["REACT_APP_MORALIS_APPLICATION_ID"], "X-Parse-Master-Key": env_vars["MORALIS_REST_MASTER_KEY"], 'Content-Type': 'application/x-www-form-urlencoded'}
-    parsed={"created": "1660379973868", "currency": "SEK", "iban": "SE8640219124958516279945", "reportId": "a06a5df1005c4f62ac23e1bb3a5cbfc0", "market": "SE", "address": "0x3fbb078878fea12e2782100521fbd329ab53da88"}
+    parsed={"created": "1660379973868", "currency": "SEK", "iban": "SE8640219124958516279945", "reportId": "9c02e888b697463ab8534a3b5fbdbcf8", "market": "SE", "address": "0x4c2cd23ae18e585c4efbed165e95de99520dd5fa"}
     data = www_form_urlencoded(parsed)
     print(url)
     print(headers)

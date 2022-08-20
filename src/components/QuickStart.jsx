@@ -37,6 +37,38 @@ export default function QuickStart() {
         style={styles.card}
         title={
           <>
+            🇹 <Text strong>Tink Instructions</Text>
+          </>
+        }
+      >
+        <Timeline mode="left" style={styles.timeline}>
+          <Timeline.Item dot="🔗">
+            <Text style={styles.text}>Press Tink Link </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🏦">
+            <Text style={styles.text}>Choose Tink Demo Bank </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="📖">
+            <Text style={styles.text}>Select Open Banking </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🔑">
+            <Text style={styles.text}>Select Password and OTP </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🔡">
+            <Text style={styles.text}>Login, OTP Method: Text input </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="🗒️">
+            <Text style={styles.text}> OTP: Enter number below input </Text>
+          </Timeline.Item>
+          <Timeline.Item dot="📒">
+            <Text style={styles.text}> Select account </Text>
+          </Timeline.Item>
+        </Timeline>
+      </Card>
+      <Card
+        style={styles.card}
+        title={
+          <>
             📒 <Text strong>Seller Credentials</Text>
           </>
         }
@@ -114,11 +146,6 @@ export default function QuickStart() {
                 EE: u45530588 / jkw063
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="🇫🇮">
-              <Text code style={styles.text}>
-                FI: u80628915 / puv375
-              </Text>
-            </Timeline.Item>
             <Timeline.Item dot="🇫🇷">
               <Text code style={styles.text}>
                 FR: u77894411 / mzw990
@@ -156,12 +183,12 @@ export default function QuickStart() {
             </Timeline.Item>
             <Timeline.Item dot="🇸🇪">
               <Text code style={styles.text}>
-                SE: u27678322 / vrh343
+                SE: u58697449 / rjg121
               </Text>
             </Timeline.Item>
             <Timeline.Item dot="🇬🇧">
               <Text code style={styles.text}>
-                UK: u83646180 / rlf446
+                GB: u83646180 / rlf446
               </Text>
             </Timeline.Item>
           </Timeline>

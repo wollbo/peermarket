@@ -5,14 +5,6 @@ export default function MarketSelector({ setMarket, style }) {
   const currencies = useMemo(() => {
     return [
       {
-        name: "AT",
-        symbol: "🇦🇹",
-      },
-      {
-        name: "EE",
-        symbol: "🇪🇪",
-      },
-      {
         name: "FI",
         symbol: "🇫🇮",
       },
