@@ -250,8 +250,8 @@ def payment_initiation(
 
     payments = {
         "EUR": 'SEPA_INSTANT_CREDIT_TRANSFER',
-        "GBP": 'UNSTRUCTURED', # alternative: FASTER_PAYMENTS
-        "SEK": 'UNSTRUCTURED',
+        "GBP": 'SEPA_CREDIT_TRANSFER', # alternative: FASTER_PAYMENTS
+        "SEK": "SEPA_INSTANT_CREDIT_TRANSFER", # has worked in the past...!
         "NOK": 'SEPA_INSTANT_CREDIT_TRANSFER'
     }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { Card, Skeleton, Input, notification, Button } from "antd";
 import { BankOutlined, RightSquareOutlined } from "@ant-design/icons";
+import MarketSelector from "components/Wallet/components/MarketSelector";
 
 const { Meta } = Card;
 
@@ -28,6 +29,7 @@ function Contracts() {
   const [payoutList, setPayout] = useState(); // seller version of purchased
   const [finishedList, setFinished] = useState();
   const [paymentId, setPaymentId] = useState();
+  const [market, setMarket] = useState();
   const { account, isAuthenticated } = useMoralis();
   const contractProcessor = useWeb3ExecuteFunction();
 
@@ -44,14 +46,14 @@ function Contracts() {
     console.log(isPending);
   };
 
-  async function sendTinkRequest() {
+  async function sendTinkRequest(market, currency, amount) {
     alert("Request sent");
     //const recipient = "SE2023668362587681437762";
     const baseUrl = "/payment/create"; // has been set as proxy
     const data = {
-      market: "SE",
-      currency: "SEK",
-      amount: "1000",
+      market: market,
+      currency: currency,
+      amount: amount,
     };
     const response = await fetch(baseUrl, {
       method: "POST",
@@ -66,24 +68,22 @@ function Contracts() {
     return responseData.id;
   }
 
-  async function initiateTink(paymentRequestId) {
+  async function initiateTink(market, paymentRequestId) {
     // this works
     // args clientId, paymentRequestId
     const clientId = "68af8742e51a417d8e492fc72a058a7a";
     const service = "pay";
     const callback = "https://console.tink.com/callback";
-    const market = "SE";
     const locale = "en_US";
-    const inputProvider = "se-demobank-open-banking-redirect";
 
     //Returns url to end user for authentication
-    const url = `https://link.tink.com/1.0/${service}?client_id=${clientId}&redirect_uri=${callback}&market=${market}&locale=${locale}&input_provider=${inputProvider}&payment_request_id=${paymentRequestId}`;
+    const url = `https://link.tink.com/1.0/${service}?client_id=${clientId}&redirect_uri=${callback}&market=${market}&locale=${locale}&payment_request_id=${paymentRequestId}`;
     window.open(url);
   }
 
-  async function tinkLinkPayment() {
-    const paymentId = await sendTinkRequest();
-    initiateTink(paymentId);
+  async function tinkLinkPayment(market, currency, amount) {
+    const paymentId = await sendTinkRequest(market, currency, amount);
+    initiateTink(market, paymentId);
   }
 
   const cancel = async function (escrowAddress) {
@@ -476,7 +476,23 @@ function Contracts() {
                         >
                           Cancel
                         </Button>
-                        <Button onClick={tinkLinkPayment}>Tink Payment</Button>
+                        <MarketSelector
+                          setMarket={setMarket}
+                          style={{ width: "10%" }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log(market.name);
+                            tinkLinkPayment(
+                              market.name,
+                              e.attributes.currency,
+                              e.attributes.fiat,
+                            );
+                          }}
+                          disabled={!market}
+                        >
+                          Tink Payment
+                        </Button>
                         <Input
                           size="large"
                           style={{ width: "30%" }}

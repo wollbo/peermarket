@@ -128,6 +128,7 @@ function Market() {
         });
       },
       onError: (error) => {
+        console.log(error.data.message);
         handler({
           message: "There was an error",
           description: error.message,

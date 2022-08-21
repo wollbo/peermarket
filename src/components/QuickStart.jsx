@@ -61,7 +61,7 @@ export default function QuickStart() {
             <Text style={styles.text}> OTP: Enter number below input </Text>
           </Timeline.Item>
           <Timeline.Item dot="📒">
-            <Text style={styles.text}> Select account </Text>
+            <Text style={styles.text}> Select account to pay from </Text>
           </Timeline.Item>
         </Timeline>
       </Card>
