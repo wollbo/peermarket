@@ -1,8 +1,13 @@
 from flask import json, make_response, jsonify
+from flask.helpers import send_from_directory
 from werkzeug.exceptions import HTTPException
 
 
 def init_handler(app):
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return app.send_from_directory(app.static_folder, 'index.html')
 
     @app.errorhandler(Exception)
     def handle_exception(e):
