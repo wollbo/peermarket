@@ -32,7 +32,8 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "start": "set \"GENERATE_SOURCEMAP=false\" && node server.js",
+    "heroku-prebuild": "yarn -g serve",
+    "start": "set \"GENERATE_SOURCEMAP=false\" && serve -s build",
     "dev": "set \"GENERATE_SOURCEMAP=false\" && react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
