@@ -50,7 +50,26 @@ The smart contract stack of the platform is divided into a the PeerMarket master
 ## Economics and viability
 In order for the platform to be self sustaining and profitable the provided oracle fees must be able to cover infrastructure and development costs. Currently, as there is only one oracle operated by the same entity as the platform, all oracle payments would be allocated to the platform operations. The expenditures involved are oracle gas costs, open banking api licenses, chainlink node-as-a-service fees, database fees and server hosting fees.
 In a production setting, you would want the chainlink nodes to be operated by teams unrelated to the platform in order to remove conflict of interests and vulnerabilities to centralized failures. This is readily facilitated by outsourcing the Tink oracle jobs to the market, each node operator would be provided with their own API keys to access the payment statuses. Thus, for a production setting an additional platform fee alongside the oracle payment would be introduced which would cover licensing and server fees. 
-With the current set of providers, a minimal production version of the platform would incur an approximate cost of 74 $/month in infrastructure fees and 0.75 $/trade in licensing costs.
+
+### Calculations
+With the current set of providers, a minimal production version of the platform would incur an approximate cost of 74$ /month in infrastructure fees and 0.75$ /trade in licensing costs.
 Assuming the platform handles 100 successful trades per month, the platform fee would have to be at least 0.75$ per trade to be net profitable. At a LINK price of 7$ this is equal to a fee of roughly 0.107 LINK per trade. This is close to the current oracle fee which is set at 0.1 LINK per call.
 For the users, the main cost currently is paying for the network gas fees, but I expect its relevance to diminish as more and more scaling solutions and competing networks drive the transaction costs down over time. This would in practice mean that the seller pays virtually no fees in the transaction, while the buyer pays the platform and oracle fee, which in the current scenario amounts to less than 1.5$ per trade in total. This is very competitive, given that similar platforms charge fees of around 1% of the trade value for the escrow service, while providing inferior security guarantees for the buyers. Or from another view, it would be possible to significantly increase the platform fees while providing a superior and cheaper product compared to the existing alternatives currently on the market. In the same scenario, assuming an average price of 2000$ per offer and a flat 0.5% platform fee, the platform would make 925$ in profit per month.
+
 ## Future work and improvements
+There are several improvements to be made to the platform as well as new features to be added:
+
+### Improvements
+- Implement more payment methods, currently only SEPA / Instant SEPA transfers are used
+- Add a LINK/ETH DEX swap as part of the offer claim to remove the need for buyers to carry LINK
+- Add support for selling ERC-20 Tokens and not only the native asset of the chain
+- Support all major EVM networks on the same platform
+- Add depositor contracts which allow sellers to sell an arbitrary amount of their assets at given prices
+- Improve robustness of the platform, add multiple payment confirmation methods
+- 
+### Future work
+- Decentralize oracle infrastructure, outsource operation to the market
+- Implement a LINK platform fee to cover infrastructure and development costs
+- Implement more open banking providers to expand to other markets
+- Enable cross chain payments using CCIP
+- Eventually expand to being able to sell any asset whose delivery can be quantified and connected to an api
