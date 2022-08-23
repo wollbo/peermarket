@@ -6,7 +6,10 @@ On PeerMarket, users can trade crypto for fiat currencies peer-to-peer without h
 PeerMarket removes the power assymmetry in favour of the seller in the transaction by delegating the role of determining payment fulfillment to a Chainlink oracle.
 By integrating with an open banking platform, payments can be performed with several currencies and a multitude of banks in the European markets.
 
-## Try it out
+## Background
+PeerMarket is the spiritual successor and culmination of the [tinklock](https://github.com/wollbo/tinklock) project, which was likely the first escrow smart contract leveraging open banking for settling peer-to-peer crypto to fiat asset exchange.
+
+## Try it out!
 The platform is available at https://peermarket-heroku.herokuapp.com/
 
 ## Instructions
