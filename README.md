@@ -66,7 +66,7 @@ There are several improvements to be made to the platform as well as new feature
 - Support all major EVM networks on the same platform
 - Add depositor contracts which allow sellers to sell an arbitrary amount of their assets at given prices
 - Improve robustness of the platform, add multiple payment confirmation methods
-- 
+
 ### Future work
 - Decentralize oracle infrastructure, outsource operation to the market
 - Implement a LINK platform fee to cover infrastructure and development costs
