@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { Card, Skeleton, Input, notification, Button } from "antd";
-import { BankOutlined, RightSquareOutlined } from "@ant-design/icons";
+import {
+  BankOutlined,
+  RightSquareOutlined,
+  PaperClipOutlined,
+} from "@ant-design/icons";
 import MarketSelector from "components/Wallet/components/MarketSelector";
 
 const { Meta } = Card;
@@ -358,6 +362,14 @@ function Contracts() {
     }
   }
 
+  const copy = async (paste, desc) => {
+    await navigator.clipboard.writeText(paste);
+    handler({
+      message: "Copied!",
+      description: desc,
+    });
+  };
+
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
     async function fetchAccepted() {
@@ -534,20 +546,39 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
-                    <Meta
-                      title={"Seller"}
-                      description={shortenString(e.attributes.seller, 5)}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Seller{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.seller,
+                                  "Seller address copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.seller, 5)}
+                      />
+                    </div>
                   </Card>
                 );
               })}
@@ -590,20 +621,55 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
-                    <Meta
-                      title={"Seller"}
-                      description={shortenString(e.attributes.seller, 5)}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Seller{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.seller,
+                                  "Seller address copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.seller, 5)}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Payment ID{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.paymentId,
+                                  "Payment ID copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.paymentId, 6)}
+                      />
+                    </div>
                   </Card>
                 );
               })}
@@ -623,31 +689,62 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
-                    <Meta
-                      title={"Seller"}
-                      description={shortenString(e.attributes.seller, 5)}
-                    />
-                    <Meta
-                      title={"Payment ID"}
-                      description={e.attributes.paymentId}
-                    />
-                    <Meta
-                      title={"Payment Status"}
-                      description={`${String(e.attributes.status).replaceAll(
-                        0,
-                        "",
-                      )}`}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Seller{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.seller,
+                                  "Seller address copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.seller, 5)}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Payment ID{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.paymentId,
+                                  "Payment ID copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.paymentId, 6)}
+                      />
+                      <Meta
+                        title={"Payment Status"}
+                        description={`${String(e.attributes.status).replaceAll(
+                          0,
+                          "",
+                        )}`}
+                      />
+                    </div>
                   </Card>
                 );
               })}
@@ -691,16 +788,23 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                    </div>
                   </Card>
                 );
               })}
@@ -733,31 +837,62 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
-                    <Meta
-                      title={"Buyer"}
-                      description={shortenString(e.attributes.seller, 5)}
-                    />
-                    <Meta
-                      title={"Payment ID"}
-                      description={e.attributes.paymentId}
-                    />
-                    <Meta
-                      title={"Payment Status"}
-                      description={`${String(e.attributes.status).replaceAll(
-                        0,
-                        "",
-                      )}`}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Buyer{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.buyer,
+                                  "Buyer address copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.buyer, 5)}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Payment ID{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.paymentId,
+                                  "Payment ID copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={e.attributes.paymentId}
+                      />
+                      <Meta
+                        title={"Payment Status"}
+                        description={`${String(e.attributes.status).replaceAll(
+                          0,
+                          "",
+                        )}`}
+                      />
+                    </div>
                   </Card>
                 );
               })}
@@ -777,31 +912,62 @@ function Contracts() {
                       border: "4px solid #e7eaf3",
                     }}
                   >
-                    <Meta
-                      title={"Offer"}
-                      description={`${String(
-                        e.attributes.offer / 10 ** 18,
-                      )} MATIC`}
-                    />
-                    <Meta
-                      title={"Price"}
-                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                    />
-                    <Meta
-                      title={"Buyer"}
-                      description={shortenString(e.attributes.seller, 5)}
-                    />
-                    <Meta
-                      title={"Payment ID"}
-                      description={e.attributes.paymentId}
-                    />
-                    <Meta
-                      title={"Payment Status"}
-                      description={`${String(e.attributes.status).replaceAll(
-                        0,
-                        "",
-                      )}`}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Meta
+                        title={"Offer"}
+                        description={`${String(
+                          e.attributes.offer / 10 ** 18,
+                        )} MATIC`}
+                      />
+                      <Meta
+                        title={"Price"}
+                        description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Buyer{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.buyer,
+                                  "Buyer address copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.buyer, 5)}
+                      />
+                      <Meta
+                        title={
+                          <div>
+                            Payment ID{" "}
+                            <PaperClipOutlined
+                              onClick={() => {
+                                copy(
+                                  e.attributes.paymentId,
+                                  "Payment ID copied to clipboard",
+                                );
+                              }}
+                            />
+                          </div>
+                        }
+                        description={shortenString(e.attributes.paymentId, 6)}
+                      ></Meta>
+                      <Meta
+                        title={"Payment Status"}
+                        description={`${String(e.attributes.status).replaceAll(
+                          0,
+                          "",
+                        )}`}
+                      />
+                    </div>
                   </Card>
                 );
               })}

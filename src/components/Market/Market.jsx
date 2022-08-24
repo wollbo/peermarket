@@ -250,7 +250,13 @@ function Market() {
         width: "100%",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "15px",
+        }}
+      >
         <SearchBar setOptions={setOptions} />
       </div>
       <div style={styles.Offers}>
@@ -277,20 +283,28 @@ function Market() {
                     border: "4px solid #e7eaf3",
                   }}
                 >
-                  <Meta
-                    title={"Offer"}
-                    description={`${String(
-                      e.attributes.offer / 10 ** 18,
-                    )} MATIC`}
-                  />
-                  <Meta
-                    title={"Price"}
-                    description={`${e.attributes.fiat} ${e.attributes.currency}`}
-                  />
-                  <Meta
-                    title={"Seller"}
-                    description={shortenString(e.attributes.seller, 5)}
-                  />
+                  <div
+                    style={{ display: "flex", justifyContent: "space-around" }}
+                  >
+                    <Meta
+                      title={"Offer"}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
+                    />
+                    <Meta
+                      title={"Price"}
+                      description={`${e.attributes.fiat} ${e.attributes.currency}`}
+                    />
+                    <Meta
+                      title={"Method"}
+                      description={"SEPA Credit Transfer"}
+                    />
+                    <Meta
+                      title={"Seller"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
+                  </div>
                 </Card>
               );
             })}
