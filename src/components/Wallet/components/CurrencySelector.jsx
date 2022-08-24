@@ -30,7 +30,12 @@ export default function CurrencySelector({ setCurrency, style }) {
   }
 
   return (
-    <Select onChange={handleChange} size="large" style={style}>
+    <Select
+      defaultActiveFirstOption
+      onChange={handleChange}
+      size="large"
+      style={style}
+    >
       {currencies &&
         currencies.map((item) => {
           return (

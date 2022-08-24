@@ -25,7 +25,12 @@ export default function AssetSelector({ setAsset, style }) {
   }
 
   return (
-    <Select onChange={handleChange} size="large" style={style}>
+    <Select
+      defaultActiveFirstOption
+      onChange={handleChange}
+      size="large"
+      style={style}
+    >
       {fullBalance &&
         fullBalance.map((item) => {
           return (

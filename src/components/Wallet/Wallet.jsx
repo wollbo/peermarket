@@ -56,6 +56,8 @@ function Wallet() {
           <div>
             <MarketSelector setMarket={setMarket} style={{ width: "50%" }} />
             <Button
+              type="primary"
+              size="large"
               onClick={() => initiateTink(market.name)}
               disabled={!market}
             >

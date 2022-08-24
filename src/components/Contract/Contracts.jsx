@@ -14,8 +14,8 @@ const styles = {
     justifyContent: "space-between",
     margin: "0 auto",
     maxWidth: "1000px",
-    width: "100%",
-    gap: "10px",
+    width: "700px",
+    gap: "15px",
   },
 };
 
@@ -45,6 +45,13 @@ function Contracts() {
     setIsPending(false);
     console.log(isPending);
   };
+
+  function shortenString(long, display) {
+    const start = long.substring(0, display);
+    const end = long.substring(long.length - display, long.length);
+    console.log(start + "..." + end);
+    return start + "..." + end;
+  }
 
   async function sendTinkRequest(market, currency, amount) {
     alert("Request sent");
@@ -470,6 +477,8 @@ function Contracts() {
                     actions={[
                       <div>
                         <Button
+                          type="danger"
+                          size="large"
                           onClick={() => {
                             cancelAccepted(e.attributes.offerAddress);
                           }}
@@ -481,6 +490,8 @@ function Contracts() {
                           style={{ width: "10%" }}
                         />
                         <Button
+                          type="primary"
+                          size="large"
                           onClick={() => {
                             console.log(market.name);
                             tinkLinkPayment(
@@ -503,6 +514,7 @@ function Contracts() {
                           }}
                         ></Input>
                         <Button
+                          size="large"
                           onClick={() => {
                             paymentId === ""
                               ? alert("Paste the payment id.")
@@ -524,19 +536,24 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta
+                      title={"Seller"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
                   </Card>
                 );
               })}
           </Skeleton>
         </div>
-        <div>
+        <div style={styles.Offers}>
           <Skeleton loading={!purchasedList}>
             {purchasedList &&
               purchasedList.map((e) => {
@@ -547,6 +564,8 @@ function Contracts() {
                     actions={[
                       <div>
                         <Button
+                          type="primary"
+                          size="large"
                           onClick={() => {
                             paymentStatus(e.attributes.offerAddress);
                           }}
@@ -555,6 +574,7 @@ function Contracts() {
                           <RightSquareOutlined />
                         </Button>
                         <Button
+                          size="large"
                           onClick={() => {
                             paymentFulfilled(e.attributes.offerAddress);
                           }}
@@ -572,19 +592,24 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta
+                      title={"Seller"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
                   </Card>
                 );
               })}
           </Skeleton>
         </div>
-        <div>
+        <div style={styles.Offers}>
           <Skeleton loading={!sentList}>
             {sentList &&
               sentList.map((e) => {
@@ -600,13 +625,18 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
+                    <Meta
+                      title={"Seller"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
                     <Meta
                       title={"Payment ID"}
                       description={e.attributes.paymentId}
@@ -645,6 +675,8 @@ function Contracts() {
                     actions={[
                       <div>
                         <Button
+                          type="primary"
+                          size="large"
                           onClick={() => {
                             relistAccepted(e.attributes.offerAddress);
                           }}
@@ -661,13 +693,14 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Seller"} description={e.attributes.seller} />
                   </Card>
                 );
               })}
@@ -681,6 +714,8 @@ function Contracts() {
                   <Card
                     title="Payout"
                     hoverable
+                    type="primary"
+                    size="large"
                     actions={[
                       <div>
                         <Button
@@ -700,13 +735,18 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Buyer"} description={e.attributes.buyer} />
+                    <Meta
+                      title={"Buyer"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
                     <Meta
                       title={"Payment ID"}
                       description={e.attributes.paymentId}
@@ -723,7 +763,7 @@ function Contracts() {
               })}
           </Skeleton>
         </div>
-        <div>
+        <div style={styles.Offers}>
           <Skeleton loading={!finishedList}>
             {finishedList &&
               finishedList.map((e) => {
@@ -739,13 +779,18 @@ function Contracts() {
                   >
                     <Meta
                       title={"Offer"}
-                      description={String(e.attributes.offer / 10 ** 18)}
+                      description={`${String(
+                        e.attributes.offer / 10 ** 18,
+                      )} MATIC`}
                     />
                     <Meta
                       title={"Price"}
                       description={`${e.attributes.fiat} ${e.attributes.currency}`}
                     />
-                    <Meta title={"Buyer"} description={e.attributes.buyer} />
+                    <Meta
+                      title={"Buyer"}
+                      description={shortenString(e.attributes.seller, 5)}
+                    />
                     <Meta
                       title={"Payment ID"}
                       description={e.attributes.paymentId}

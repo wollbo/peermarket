@@ -45,6 +45,7 @@ export default function AccountVerification() {
         }}
       ></Input>
       <Button
+        size="large"
         onClick={() => {
           id === ""
             ? alert("Paste the report id.")

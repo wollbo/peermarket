@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { Card, Tooltip, Skeleton, notification } from "antd";
+import { Card, Skeleton, notification } from "antd";
+import { Button } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import SearchBar from "./components/SearchBar";
 
@@ -14,7 +15,7 @@ const styles = {
     justifyContent: "flex-start",
     margin: "0 auto",
     maxWidth: "1000px",
-    width: "100%",
+    width: "80%",
     gap: "10px",
   },
 };
@@ -38,6 +39,13 @@ function Market() {
     });
     setIsPending(false);
   };
+
+  function shortenString(long, display) {
+    const start = long.substring(0, display);
+    const end = long.substring(long.length - display, long.length);
+    console.log(start + "..." + end);
+    return start + "..." + end;
+  }
 
   const getPayment = async function (escrowAddress) {
     const options = {
@@ -214,11 +222,10 @@ function Market() {
       const query = new Moralis.Query(Listed);
       const Accepted = Moralis.Object.extend("Accepted");
       const accepted = new Moralis.Query(Accepted);
-      /* this throws recursion errors
-      {
+      /*{ // causes recursion errors
         options.currency && query.equalTo("currency", options.currency);
-      } // show all currencies if no currency selected
-      */
+      }*/ // show all currencies if no currency selected
+      console.log(options.currency);
       {
         options.fiat && query.lessThanOrEqualTo("fiat", options.fiat);
       }
@@ -236,9 +243,16 @@ function Market() {
   }, [options]);
 
   return (
-    <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
-      <SearchBar setOptions={setOptions} />
-      <h1>PeerMarket offers</h1>
+    <div
+      style={{
+        padding: "15px",
+        maxWidth: "1030px",
+        width: "100%",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <SearchBar setOptions={setOptions} />
+      </div>
       <div style={styles.Offers}>
         <Skeleton loading={!offersList}>
           {offersList &&
@@ -247,14 +261,15 @@ function Market() {
                 <Card
                   hoverable
                   actions={[
-                    <Tooltip title="Purchase">
-                      <ShoppingCartOutlined
-                        loading={isPending}
-                        onClick={() =>
-                          acceptContract(e.attributes.offerAddress)
-                        }
-                      />
-                    </Tooltip>,
+                    <Button
+                      loading={isPending}
+                      type="primary"
+                      size="large"
+                      onClick={() => acceptContract(e.attributes.offerAddress)}
+                    >
+                      <ShoppingCartOutlined />
+                      Accept
+                    </Button>,
                   ]}
                   style={{
                     justifyContent: "flex-start",
@@ -264,13 +279,18 @@ function Market() {
                 >
                   <Meta
                     title={"Offer"}
-                    description={String(e.attributes.offer / 10 ** 18)}
+                    description={`${String(
+                      e.attributes.offer / 10 ** 18,
+                    )} MATIC`}
                   />
                   <Meta
                     title={"Price"}
                     description={`${e.attributes.fiat} ${e.attributes.currency}`}
                   />
-                  <Meta title={"Seller"} description={e.attributes.seller} />
+                  <Meta
+                    title={"Seller"}
+                    description={shortenString(e.attributes.seller, 5)}
+                  />
                 </Card>
               );
             })}

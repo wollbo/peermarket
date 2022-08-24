@@ -23,26 +23,43 @@ function SearchBar({ setOptions }) {
   return (
     // temporary solution with AssetSelector - uses buyers list of cryptos
     // get available assets by searching through every listed asset class later on
-    <>
-      <AssetSelector setAsset={setAsset} style={{ width: "20%" }} />
-      <Input
-        showSearch
-        style={{ width: "20%", marginLeft: "10px", marginRight: "10px" }}
-        placeHolder="Enter crypto amount"
-        onChange={(e) => {
-          setAmount(`${e.target.value * 10 ** 18}`);
-        }}
-      />
-      <CurrencySelector setCurrency={setCurrency} style={{ width: "20%" }} />
-      <Input
-        showSearch
-        style={{ width: "20%", marginLeft: "10px" }}
-        placeHolder="Enter fiat amount"
-        onChange={(e) => {
-          setFiat(`${e.target.value}`);
-        }}
-      />
-    </>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        maxWidth: "500px",
+        width: "100%",
+        gap: "5px",
+      }}
+    >
+      <div>
+        <AssetSelector setAsset={setAsset} style={{ width: "200px" }} />
+        <CurrencySelector
+          setCurrency={setCurrency}
+          style={{ width: "200px" }}
+        />
+      </div>
+      <div>
+        <Input
+          showSearch
+          size="large"
+          style={{ width: "70%" }}
+          placeHolder="Enter crypto amount"
+          onChange={(e) => {
+            setAmount(`${e.target.value * 10 ** 18}`);
+          }}
+        />
+        <Input
+          showSearch
+          size="large"
+          style={{ width: "70%" }}
+          placeHolder="Enter fiat amount"
+          onChange={(e) => {
+            setFiat(`${e.target.value}`);
+          }}
+        />
+      </div>
+    </div>
   );
 }
 
