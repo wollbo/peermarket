@@ -477,7 +477,9 @@ function Contracts() {
           justifyContent: "space-around",
         }}
       >
-        <h1>Your Contracts</h1>
+        <h1 style={{ display: "flex", justifyContent: "center" }}>
+          Your Contracts
+        </h1>
         <div style={styles.Offers}>
           <Skeleton loading={!acceptedList}>
             {acceptedList &&
@@ -760,7 +762,9 @@ function Contracts() {
           justifyContent: "space-around",
         }}
       >
-        <h1>Your Offers</h1>
+        <h1 style={{ display: "flex", justifyContent: "center" }}>
+          Your Offers
+        </h1>
         <div style={styles.Offers}>
           <Skeleton loading={!listedList}>
             {listedList &&
