@@ -7,7 +7,7 @@ export default function AssetSelector({ setAsset, style }) {
   const { data: nativeBalance, nativeToken } = useNativeBalance();
 
   const fullBalance = useMemo(() => {
-    if (!nativeBalance) return null;
+    if (!(nativeBalance && nativeToken)) return null;
     return [
       {
         balance: nativeBalance.balance,

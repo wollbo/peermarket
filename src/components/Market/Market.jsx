@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { Card, Skeleton, notification } from "antd";
 import { Button } from "antd";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, PaperClipOutlined } from "@ant-design/icons";
 import SearchBar from "./components/SearchBar";
 
 const { Meta } = Card;
@@ -215,6 +215,14 @@ function Market() {
     // else return antd notification - you need to connect first!!
   }
 
+  const copy = async (paste, desc) => {
+    await navigator.clipboard.writeText(paste);
+    handler({
+      message: "Copied!",
+      description: desc,
+    });
+  };
+
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
     async function fetchOffers() {
@@ -301,7 +309,19 @@ function Market() {
                       description={"SEPA Credit Transfer"}
                     />
                     <Meta
-                      title={"Seller"}
+                      title={
+                        <div>
+                          Seller{" "}
+                          <PaperClipOutlined
+                            onClick={() => {
+                              copy(
+                                e.attributes.seller,
+                                "Seller address copied to clipboard",
+                              );
+                            }}
+                          />
+                        </div>
+                      }
                       description={shortenString(e.attributes.seller, 5)}
                     />
                   </div>
