@@ -6,9 +6,11 @@ import { Button, Card } from "antd";
 import AccountVerification from "./components/AccountVerification";
 import MarketSelector from "./components/MarketSelector";
 import { useState } from "react";
+import { useMoralis } from "react-moralis";
 
 function Wallet() {
   const [market, setMarket] = useState();
+  const { account, isAuthenticated } = useMoralis();
 
   const styles = {
     title: {
@@ -59,7 +61,7 @@ function Wallet() {
               type="primary"
               size="large"
               onClick={() => initiateTink(market.name)}
-              disabled={!market}
+              disabled={!(market && account && isAuthenticated)}
             >
               Verify account
             </Button>

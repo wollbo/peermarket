@@ -52,9 +52,9 @@ function Escrow() {
   const [tx, setTx] = useState();
   const [amount, setAmount] = useState();
   const [fiat, setFiat] = useState();
-  const [currency, setCurrency] = useState();
+  const [currency, setCurrency] = useState("EUR");
   const { account, isAuthenticated } = useMoralis();
-  const [accountReport, setAccountReport] = useState();
+  const [accountReport, setAccountReport] = useState(0);
   const [isPending, setIsPending] = useState(false);
   const contractProcessor = useWeb3ExecuteFunction();
   const peerMarketAddress = "0xD14155F9C414E0A6c49F3DDAf6C193E85c1685Fe";

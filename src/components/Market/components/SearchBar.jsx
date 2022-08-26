@@ -27,16 +27,16 @@ function SearchBar({ setOptions }) {
       style={{
         display: "flex",
         justifyContent: "center",
-        maxWidth: "500px",
+        maxWidth: "455px",
         width: "100%",
-        gap: "5px",
+        gap: "12px",
       }}
     >
       <div>
-        <AssetSelector setAsset={setAsset} style={{ width: "200px" }} />
+        <AssetSelector setAsset={setAsset} style={{ width: "175px" }} />
         <CurrencySelector
           setCurrency={setCurrency}
-          style={{ width: "200px" }}
+          style={{ width: "175px" }}
         />
       </div>
       <div>

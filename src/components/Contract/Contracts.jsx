@@ -19,7 +19,7 @@ const styles = {
     margin: "0 auto",
     maxWidth: "1000px",
     width: "700px",
-    gap: "15px",
+    gap: "10px",
   },
 };
 
@@ -501,7 +501,7 @@ function Contracts() {
                         </Button>
                         <MarketSelector
                           setMarket={setMarket}
-                          style={{ width: "10%" }}
+                          style={{ width: "12%" }}
                         />
                         <Button
                           type="primary"

@@ -265,8 +265,21 @@ function Market() {
           padding: "15px",
         }}
       >
-        <SearchBar setOptions={setOptions} />
+        <Skeleton loading={!account && isAuthenticated}>
+          <SearchBar setOptions={setOptions} />
+        </Skeleton>
       </div>
+      {!(account || isAuthenticated) && (
+        <h2
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "15px",
+          }}
+        >
+          Authenticate to view the market
+        </h2>
+      )}
       <div style={styles.Offers}>
         <Skeleton loading={!offersList}>
           {offersList &&
@@ -292,7 +305,10 @@ function Market() {
                   }}
                 >
                   <div
-                    style={{ display: "flex", justifyContent: "space-around" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                    }}
                   >
                     <Meta
                       title={"Offer"}
