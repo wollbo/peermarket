@@ -41,7 +41,7 @@ export default function MarketSelector({ setMarket, style }) {
         symbol: "🇸🇪",
       },
       {
-        name: "UK",
+        name: "GB",
         symbol: "🇬🇧",
       },
     ];

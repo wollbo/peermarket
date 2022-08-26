@@ -48,7 +48,7 @@ export default function AssetSelector({ setAsset, style }) {
               >
                 <Image
                   src={
-                    item.logo ||
+                    "https://img.api.cryptorank.io/coins/polygon1624610763534.png" ||
                     "https://etherscan.io/images/main/empty-token.png"
                   }
                   alt="nologo"

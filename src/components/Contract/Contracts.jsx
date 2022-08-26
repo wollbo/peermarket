@@ -113,6 +113,7 @@ function Contracts() {
       params: {},
     };
     console.log(escrowAddress);
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -147,6 +148,7 @@ function Contracts() {
       params: {},
     };
     console.log(escrowAddress);
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -181,6 +183,7 @@ function Contracts() {
       params: {},
     };
     console.log(escrowAddress);
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -222,6 +225,7 @@ function Contracts() {
     };
     console.log(escrowAddress);
     console.log(paymentId);
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -261,6 +265,7 @@ function Contracts() {
       ],
       params: {},
     };
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -320,6 +325,7 @@ function Contracts() {
       ],
       params: {},
     };
+    setIsPending(true);
     await contractProcessor.fetch({
       params: options,
       onSuccess: () => {
@@ -385,7 +391,7 @@ function Contracts() {
       console.log(acceptedList);
     }
     fetchAccepted();
-  }, []);
+  }, [isPending]);
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
@@ -402,7 +408,7 @@ function Contracts() {
       console.log(purchasedList);
     }
     fetchPurchased();
-  }, []);
+  }, [isPending]);
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
@@ -416,7 +422,7 @@ function Contracts() {
       console.log(purchasedList);
     }
     fetchSent();
-  }, []);
+  }, [isPending]);
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
@@ -433,7 +439,7 @@ function Contracts() {
       console.log(listedList);
     }
     fetchListed();
-  }, []);
+  }, [isPending]);
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
@@ -450,7 +456,7 @@ function Contracts() {
       console.log(payoutList);
     }
     fetchPayout();
-  }, []);
+  }, [isPending]);
 
   useEffect(() => {
     // import similarly to how tx is imported in transfer from searchbar
@@ -464,7 +470,7 @@ function Contracts() {
       console.log(finishedList);
     }
     fetchFinished();
-  }, []);
+  }, [isPending]);
 
   return (
     <div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -486,7 +492,19 @@ function Contracts() {
               acceptedList.map((e) => {
                 return (
                   <Card
-                    title="Accepted"
+                    title={
+                      <div>
+                        Accepted{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.offerAddress,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     actions={[
                       <div>
@@ -592,7 +610,19 @@ function Contracts() {
               purchasedList.map((e) => {
                 return (
                   <Card
-                    title="Purchased"
+                    title={
+                      <div>
+                        Purchased{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.offerAddress,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     actions={[
                       <div>
@@ -683,7 +713,19 @@ function Contracts() {
               sentList.map((e) => {
                 return (
                   <Card
-                    title="Sold"
+                    title={
+                      <div>
+                        Sent{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.offerAddress,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     style={{
                       justifyContent: "flex-start",
@@ -771,7 +813,19 @@ function Contracts() {
               listedList.map((e) => {
                 return (
                   <Card
-                    title="Listed"
+                    title={
+                      <div>
+                        Listed{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.seller,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     actions={[
                       <div>
@@ -820,7 +874,19 @@ function Contracts() {
               payoutList.map((e) => {
                 return (
                   <Card
-                    title="Payout"
+                    title={
+                      <div>
+                        Payout{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.offerAddress,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     type="primary"
                     size="large"
@@ -908,7 +974,19 @@ function Contracts() {
               finishedList.map((e) => {
                 return (
                   <Card
-                    title="Sold"
+                    title={
+                      <div>
+                        Sold{" "}
+                        <PaperClipOutlined
+                          onClick={() => {
+                            copy(
+                              e.attributes.offerAddress,
+                              "Contract address copied to clipboard",
+                            );
+                          }}
+                        />
+                      </div>
+                    }
                     hoverable
                     style={{
                       justifyContent: "flex-start",

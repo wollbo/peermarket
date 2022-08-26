@@ -254,6 +254,13 @@ contract Escrow is ChainlinkClient {
         pm.purchasedToFinished(seller, buyer, offer, fiat, currency, paymentId, status);
     }
 
+    function withdraw() public payable sellerOnly {
+        require(state == State.LISTED);
+        state = State.FINISHED;
+        withdrawLink();
+        seller.transfer(address(this).balance);
+    }
+
     function withdrawLink() public payable sellerOnly { // seller can withdraw extra LINK from slashing
         require(state == State.LISTED || state == State.FINISHED);
         link.transfer(seller, link.balanceOf(address(this)));
