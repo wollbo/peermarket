@@ -3,7 +3,7 @@ A peer-to-peer crypto to fiat marketplace powered by open banking oracles
 
 ## Overview
 On PeerMarket, users can trade crypto for fiat currencies peer-to-peer without having to trust each other or a centralized arbitror. Compared to similar platforms, 
-PeerMarket removes the power assymmetry in favour of the seller in the transaction by delegating the role of determining payment fulfillment to a Chainlink oracle.
+PeerMarket removes the power asymmetry in favour of the seller in the transaction by delegating the role of determining payment fulfillment to a Chainlink oracle.
 By integrating with an open banking platform, payments can be performed with several currencies and a multitude of banks in the European markets.
 
 ## Background
@@ -14,7 +14,8 @@ The platform is available at https://peermarket-heroku.herokuapp.com/
 
 ## Instructions
 The platform is currently live only on the Matic Mumbai PoS testnet, in order to buy and sell contracts you need testnet MATIC and LINK in your web3 wallet.
-The landing page shows all of the credentials and logical flow in the sand box bank environment that the platform is using (no real fiat payments are involved).
+The landing page shows all of the credentials and logical flow in the sand box bank environment that the platform is using (no real fiat payments are involved). 
+Video instructions showing how to use the platform is available at https://youtu.be/zbxMUdaALZ8
 
 ### Creating an offer
 In order to create an offer, navigate to the 'Listing' page through the header menu. First, authenticate to the platform and select your market through the drop down menu.
