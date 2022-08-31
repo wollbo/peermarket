@@ -7,14 +7,14 @@ PeerMarket removes the power asymmetry in favor of the seller in the transaction
 By integrating with an open banking platform, payments can be performed with several currencies and a multitude of banks in the European markets.
 
 ## Background
-PeerMarket is the spiritual successor and culmination of the [tinklock](https://github.com/wollbo/tinklock) project, which was the first escrow smart contract to leverage open banking for settling peer-to-peer crypto to fiat asset exchange.
+PeerMarket is the spiritual successor and culmination of the [tinklock](https://github.com/wollbo/tinklock) project, which was one of the first escrow smart contracts to leverage open banking for settling peer-to-peer crypto to fiat asset exchange.
 
 ## Try it out!
 The platform is available at https://peermarket-heroku.herokuapp.com/
 
 ## Instructions
 The platform is currently live only on the Matic Mumbai PoS testnet, to buy and sell contracts you need testnet MATIC and LINK in your web3 wallet.
-The landing page shows all of the credentials and logical flow in the sandbox bank environment that the platform is using (no real fiat payments are involved). 
+The landing page shows all of the credentials and logical flow in the sandbox bank environment that the platform is using (no real fiat payments are involved). NOTE: Only EUR markets are currently working properly in the Demo bank.
 Video instructions showing how to use the platform are available at https://youtu.be/zbxMUdaALZ8.
 
 ### Creating an offer
