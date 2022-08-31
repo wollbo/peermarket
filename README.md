@@ -14,8 +14,8 @@ The platform is available at https://peermarket-heroku.herokuapp.com/
 
 ## Instructions
 The platform is currently live only on the Matic Mumbai PoS testnet, to buy and sell contracts you need testnet MATIC and LINK in your web3 wallet.
-The landing page shows all of the credentials and logical flow in the sandbox bank environment that the platform is using (no real fiat payments are involved). NOTE: Only EUR markets are currently working properly in the Demo bank.
-Video instructions showing how to use the platform are available at https://youtu.be/zbxMUdaALZ8.
+The landing page shows all of the credentials and logical flow in the sandbox bank environment that the platform is using (no real fiat payments are involved). Video instructions showing how to use the platform are available at https://youtu.be/zbxMUdaALZ8.
+<br> *Note: Only EUR markets are currently working properly in the Demo bank.*
 
 ### Creating an offer
 In order to create an offer, navigate to the 'Listing' page through the header menu. First, authenticate to the platform and select your market through the dropdown menu.
