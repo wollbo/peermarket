@@ -28,7 +28,7 @@ Press the 'Create' button and sign the transaction to complete the process. You 
 ### Claiming an offer
 On PeerMarket, offers are first claimed before they can be purchased to avoid double spending on fiat payments. To avoid spoofing,
 a prospective buyer must provide the LINK used for confirming payment to the Escrow contract as part of the claiming process. This means that the buyer when first pressing
-'Purchase' on a contract will be prompted to set the oracle fee allowance for the contract to use his LINK, after this transaction is signed he can press 'Purchase' again,
+'Accept' on a contract will be prompted to set the oracle fee allowance for the contract to use his LINK, after this transaction is signed he can press 'Accept' again,
 which will move the contract to the 'ACCEPTED' state. Navigate to the 'Contracts' page in the header, and you will be able to find a list of your claimed, purchased, and listed contracts.
 
 ### Tink Link payment flow
