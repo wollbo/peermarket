@@ -76,4 +76,4 @@ There are several improvements to be made to the platform as well as new feature
 - Implement a LINK platform fee to cover infrastructure and development costs
 - Implement more open banking providers to expand to other markets
 - Enable cross-chain payments using CCIP
-- Eventually, expand to being able to sell any asset whose delivery can be quantified and connected to an API
+- Eventually, expand to being able to pay with any asset whose delivery can be quantified and connected to an API
